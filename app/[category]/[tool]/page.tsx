@@ -5,7 +5,7 @@ import { getCategory } from "@/lib/categories";
 import { getTool, getToolsInCategory, tools } from "@/lib/tools";
 import InstagramCaptionTool from "@/components/tools/InstagramCaptionTool";
 import OCRTool from "@/components/tools/OCRTool";
-import NeonTextTool from "@/components/tools/NeonTextTool";
+import TextEffectTool from "@/components/tools/TextEffectTool";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -33,14 +33,14 @@ export async function generateMetadata({
   };
 }
 
-function renderTool(componentKey: string | null) {
+function renderTool(componentKey: string | null, slug: string) {
   switch (componentKey) {
     case "instagram-caption":
       return <InstagramCaptionTool />;
     case "ocr":
       return <OCRTool />;
-    case "neon":
-      return <NeonTextTool />;
+    case "text-effect":
+      return <TextEffectTool slug={slug} />;
     default:
       return (
         <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-white">
@@ -139,7 +139,7 @@ export default async function ToolPage({
       </div>
 
       {/* Actual tool */}
-      <div className="mb-12">{renderTool(t.component)}</div>
+      <div className="mb-12">{renderTool(t.component, t.slug)}</div>
 
       {/* SEO content + related */}
       <div className="grid lg:grid-cols-3 gap-6">

@@ -1,50 +1,65 @@
 import { NextResponse } from "next/server";
+import {
+  getAnthropic,
+  MODEL_VISION,
+  imageBlock,
+  fileToBase64,
+} from "@/lib/ai";
 
-const SAMPLES = [
-  `Receipt — Cafe Sunrise
-Date: 2026-05-18
+export const runtime = "nodejs";
+export const maxDuration = 30;
 
-1x Cappuccino           $4.50
-1x Almond croissant     $3.80
-1x Sparkling water      $2.20
-------------------------
-Subtotal               $10.50
-Tax (8.5%)              $0.89
-------------------------
-Total                  $11.39
+export async function POST(req: Request) {
+  try {
+    const form = await req.formData();
+    const file = form.get("image") as File | null;
+    const language = (form.get("language") as string) || "auto-detect";
 
-Thank you for visiting!`,
-  `Meeting notes — May 18
+    if (!file) {
+      return NextResponse.json({ error: "No image uploaded" }, { status: 400 });
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      return NextResponse.json(
+        { error: "Image too large (max 10 MB)" },
+        { status: 413 },
+      );
+    }
 
-Topic: Q3 launch
-Attendees: Alex, Sam, Priya
+    const prompt = `Extract ALL text from this image. Output the text exactly as it appears, preserving line breaks and structure. Do not add any commentary, explanation, markdown formatting, or wrapping. Output only the raw extracted text. If there is no text in the image, output exactly: NO_TEXT_FOUND.
+${language !== "auto-detect" ? `The text is in: ${language}.` : ""}`;
 
-- Confirm landing page copy by Friday
-- Email automation needs QA from marketing
-- Pricing experiment goes live Monday
-- Next sync: Wed 2pm`,
-  `INGREDIENTS
+    const { base64, mediaType } = await fileToBase64(file);
+    const client = getAnthropic();
 
-2 cups all-purpose flour
-1 tsp baking soda
-1/2 tsp salt
-1 cup butter, softened
-3/4 cup sugar
-3/4 cup brown sugar
-2 large eggs
-1 tsp vanilla extract
-2 cups chocolate chips
+    const response = await client.messages.create({
+      model: MODEL_VISION,
+      max_tokens: 4000,
+      messages: [
+        {
+          role: "user",
+          content: [imageBlock(base64, mediaType), { type: "text", text: prompt }],
+        },
+      ],
+    });
 
-Preheat oven to 375°F.
-Mix dry ingredients in one bowl.
-Cream butter and sugars in another.
-Combine, fold in chips.
-Bake 10–12 minutes.`,
-];
+    const text = response.content
+      .filter((c) => c.type === "text")
+      .map((c) => (c as { type: "text"; text: string }).text)
+      .join("")
+      .trim();
 
-export async function POST() {
-  // Mock latency
-  await new Promise((r) => setTimeout(r, 800));
-  const text = SAMPLES[Math.floor(Math.random() * SAMPLES.length)];
-  return NextResponse.json({ text, confidence: 0.94, language: "en" });
+    if (text === "NO_TEXT_FOUND" || !text) {
+      return NextResponse.json({
+        text: "",
+        empty: true,
+        message: "No text detected in the image.",
+      });
+    }
+
+    return NextResponse.json({ text, language });
+  } catch (err) {
+    console.error("/api/ocr error:", err);
+    const msg = err instanceof Error ? err.message : "Internal error";
+    return NextResponse.json({ error: msg }, { status: 500 });
+  }
 }

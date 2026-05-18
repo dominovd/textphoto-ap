@@ -69,17 +69,43 @@ Tools without a working component show a friendly "coming soon" message — the 
 
 That's it — the category page and tool page rebuild automatically.
 
-## Wiring real AI
+## AI integration
 
-Right now `/api/caption` and `/api/ocr` return mock data. To wire real AI:
+`/api/caption` and `/api/ocr` use Anthropic Claude (vision-capable Sonnet model) — see `lib/ai.ts`.
 
-1. Add API key env var to Vercel: `ANTHROPIC_API_KEY` (or `OPENAI_API_KEY`).
-2. Install SDK: `npm install @anthropic-ai/sdk` (or `openai`).
-3. Replace mock logic in the relevant `app/api/*/route.ts` file with a real model call.
+**Required env var on Vercel:** `ANTHROPIC_API_KEY` — get one at https://console.anthropic.com.
 
-Recommended models for cost control:
-- Captions: Claude Haiku 4.5 or GPT-4o-mini.
-- OCR: GPT-4o (vision) or Claude Sonnet 4.6 (vision).
+To set in Vercel:
+1. Project → Settings → Environment Variables.
+2. Add `ANTHROPIC_API_KEY` with your key, scope: Production, Preview, Development.
+3. Redeploy.
+
+For local dev, create `.env.local`:
+
+```
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+Models used (configurable in `lib/ai.ts`):
+- `claude-sonnet-4-5` — vision for captions and OCR
+- `claude-haiku-4-5-20251001` — fast text-only (not used yet, reserved for future tools)
+
+To switch to OpenAI, replace the SDK calls in `app/api/caption/route.ts` and `app/api/ocr/route.ts` — the prompts and parsing logic stay similar.
+
+## Analytics
+
+Two providers are pre-wired:
+
+- **Vercel Web Analytics** — auto-enabled. View at Vercel → Project → Analytics.
+- **Plausible** — script in `app/layout.tsx` points to `plausible.io/js/script.js` with `data-domain="textphoto.app"`. Create the site at https://plausible.io/sites and traffic shows up there. Plausible is paid after the trial; if you don't want it, remove the `<Script>` block from `app/layout.tsx`.
+
+## Search Console
+
+Google Search Console verification meta tag is already in `app/layout.tsx`. After deploy:
+
+1. Add `textphoto.app` as a property at https://search.google.com/search-console.
+2. Pick the "HTML tag" verification method — it should auto-pass since the meta tag is live.
+3. Submit `https://textphoto.app/sitemap.xml`.
 
 ## Deploy to Vercel (step-by-step)
 

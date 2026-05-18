@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const VIBES = [
   { id: "aesthetic", label: "✨ Aesthetic" },
@@ -19,25 +19,49 @@ export default function InstagramCaptionTool() {
   const [emojis, setEmojis] = useState(true);
   const [loading, setLoading] = useState(false);
   const [captions, setCaptions] = useState<Caption[]>([]);
-  const [filename, setFilename] = useState<string>("");
+  const [file, setFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string>("");
+  const [error, setError] = useState<string>("");
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   function onFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const f = e.target.files?.[0];
-    if (f) setFilename(f.name);
+    if (!f) return;
+    if (f.size > 10 * 1024 * 1024) {
+      setError("Image too large — max 10 MB");
+      return;
+    }
+    setError("");
+    setFile(f);
+    setPreviewUrl(URL.createObjectURL(f));
+    setCaptions([]);
   }
 
   async function onGenerate() {
+    if (!file) {
+      setError("Please upload a photo first");
+      return;
+    }
     setLoading(true);
+    setError("");
     setCaptions([]);
     try {
-      const res = await fetch("/api/caption", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ vibe, hashtags, emojis }),
-      });
+      const form = new FormData();
+      form.append("image", file);
+      form.append("vibe", vibe);
+      form.append("hashtags", String(hashtags));
+      form.append("emojis", String(emojis));
+
+      const res = await fetch("/api/caption", { method: "POST", body: form });
       const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Something went wrong");
+        return;
+      }
       setCaptions(data.captions || []);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Network error");
     } finally {
       setLoading(false);
     }
@@ -56,20 +80,26 @@ export default function InstagramCaptionTool() {
         <label className="text-sm font-semibold mb-3 block">
           1. Upload your photo
         </label>
-        <label className="block border-2 border-dashed border-slate-300 rounded-xl p-10 text-center hover:border-brand-400 cursor-pointer">
+        <label className="block border-2 border-dashed border-slate-300 rounded-xl p-6 text-center hover:border-brand-400 cursor-pointer">
           <input
+            ref={fileInputRef}
             type="file"
             accept="image/*"
             className="hidden"
             onChange={onFileChange}
           />
-          <div className="text-4xl mb-2">📷</div>
-          {filename ? (
-            <p className="text-sm text-slate-700 font-medium">{filename}</p>
+          {previewUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={previewUrl}
+              alt={file?.name || "preview"}
+              className="max-h-44 mx-auto rounded-lg"
+            />
           ) : (
             <>
+              <div className="text-4xl mb-2">📷</div>
               <p className="text-sm text-slate-600">
-                Drop a photo here or{" "}
+                Drop a photo or{" "}
                 <span className="text-brand-600 font-medium">browse</span>
               </p>
               <p className="text-xs text-slate-400 mt-1">
@@ -134,10 +164,16 @@ export default function InstagramCaptionTool() {
           </button>
         </div>
 
+        {error && (
+          <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs">
+            {error}
+          </div>
+        )}
+
         <button
           onClick={onGenerate}
-          disabled={loading}
-          className="mt-6 w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:bg-brand-300 text-white font-semibold"
+          disabled={loading || !file}
+          className="mt-6 w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:bg-brand-300 disabled:cursor-not-allowed text-white font-semibold"
         >
           {loading ? "Generating…" : "Generate 10 captions →"}
         </button>
@@ -149,7 +185,7 @@ export default function InstagramCaptionTool() {
           <h3 className="font-semibold">Your captions</h3>
           {captions.length > 0 && (
             <span className="text-xs text-slate-400">
-              {captions.length} generated
+              {captions.length} generated · tap to copy
             </span>
           )}
         </div>
@@ -162,7 +198,7 @@ export default function InstagramCaptionTool() {
 
         {loading && (
           <div className="text-slate-400 text-sm text-center py-20 animate-pulse">
-            Cooking up 10 captions…
+            Reading your photo and cooking up captions…
           </div>
         )}
 

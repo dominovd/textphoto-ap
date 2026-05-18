@@ -6,8 +6,13 @@ export type Tool = {
   longDescription: string;
   icon: string;
   searchVolume: number;
-  // Component to render in the tool page (one of "instagram-caption" | "ocr" | "neon" | null)
-  component: "instagram-caption" | "ocr" | "neon" | null;
+  // Component dispatcher key.
+  // "text-effect" uses the generic TextEffectTool keyed by `slug` via lib/effects.ts
+  component:
+    | "instagram-caption"
+    | "ocr"
+    | "text-effect"
+    | null;
   faq: { q: string; a: string }[];
   featured?: boolean;
 };
@@ -56,7 +61,10 @@ export const tools: Tool[] = [
     component: null,
     faq: [
       { q: "Is it free?", a: "Yes, completely free." },
-      { q: "Does it suggest hashtags?", a: "Yes — based on what's trending and relevant to your video." },
+      {
+        q: "Does it suggest hashtags?",
+        a: "Yes — based on what's trending and relevant to your video.",
+      },
     ],
   },
   {
@@ -70,7 +78,10 @@ export const tools: Tool[] = [
     searchVolume: 2400,
     component: null,
     faq: [
-      { q: "Which platforms does it support?", a: "Instagram, TikTok, Facebook, LinkedIn, Pinterest, Twitter/X." },
+      {
+        q: "Which platforms does it support?",
+        a: "Instagram, TikTok, Facebook, LinkedIn, Pinterest, Twitter/X.",
+      },
     ],
   },
   {
@@ -91,7 +102,8 @@ export const tools: Tool[] = [
     slug: "image-to-text",
     category: "ocr",
     name: "Image to Text (OCR online)",
-    shortDescription: "Extract text from any image — receipts, screenshots, handwriting, scanned docs.",
+    shortDescription:
+      "Extract text from any image — receipts, screenshots, handwriting, scanned docs.",
     longDescription:
       "Drop any image and get the text inside it — instantly. Works on receipts, screenshots, scanned documents, even handwritten notes. Supports 30+ languages.",
     icon: "🔤",
@@ -99,10 +111,22 @@ export const tools: Tool[] = [
     component: "ocr",
     featured: true,
     faq: [
-      { q: "What file formats are supported?", a: "PNG, JPG, JPEG, WEBP, GIF. Max 10 MB." },
-      { q: "Does it work with handwriting?", a: "Yes — accuracy is best with clear, dark-on-light handwriting." },
-      { q: "Is my image stored?", a: "No. Images are deleted from our servers immediately after processing." },
-      { q: "Which languages are supported?", a: "30+ languages including English, Spanish, French, German, Russian, Chinese, Japanese, Korean, Arabic." },
+      {
+        q: "What file formats are supported?",
+        a: "PNG, JPG, JPEG, WEBP, GIF. Max 10 MB.",
+      },
+      {
+        q: "Does it work with handwriting?",
+        a: "Yes — accuracy is best with clear, dark-on-light handwriting.",
+      },
+      {
+        q: "Is my image stored?",
+        a: "No. Images are deleted from our servers immediately after processing.",
+      },
+      {
+        q: "Which languages are supported?",
+        a: "30+ languages including English, Spanish, French, German, Russian, Chinese, Japanese, Korean, Arabic.",
+      },
     ],
   },
   {
@@ -110,74 +134,138 @@ export const tools: Tool[] = [
     category: "ocr",
     name: "Handwriting to Text",
     shortDescription: "Turn handwritten notes into editable text.",
-    longDescription: "AI handwriting recognition. Upload a photo of handwritten notes or letters and get editable digital text.",
+    longDescription:
+      "AI handwriting recognition. Upload a photo of handwritten notes or letters and get editable digital text.",
     icon: "✍️",
     searchVolume: 4400,
     component: null,
-    faq: [{ q: "How accurate is it?", a: "85-95% for clear handwriting, lower for cursive or messy writing." }],
+    faq: [
+      {
+        q: "How accurate is it?",
+        a: "85-95% for clear handwriting, lower for cursive or messy writing.",
+      },
+    ],
   },
   {
     slug: "translate-from-photo",
     category: "ocr",
     name: "Translate Text from Photo",
     shortDescription: "Extract + translate text from any image.",
-    longDescription: "Two steps in one — OCR + translation. Useful for menus, signs, documents in a foreign language.",
+    longDescription:
+      "Two steps in one — OCR + translation. Useful for menus, signs, documents in a foreign language.",
     icon: "🌐",
     searchVolume: 9900,
     component: null,
     faq: [{ q: "How many languages?", a: "30+ for OCR, 100+ for translation." }],
   },
 
-  // === EFFECTS ===
+  // === EFFECTS (all using generic TextEffectTool via lib/effects.ts) ===
   {
     slug: "neon",
     category: "effects",
     name: "Neon Text Generator",
-    shortDescription: "Glowing neon letters for posters, social media, Twitch overlays.",
+    shortDescription:
+      "Glowing neon letters for posters, social media, Twitch overlays.",
     longDescription:
-      "Type your text, pick a color, get a glowing neon image — ready to download as PNG with transparent background. Perfect for posters, Twitch overlays, video thumbnails.",
+      "Type your text, pick a color, get a glowing neon image — perfect for posters, Twitch overlays, video thumbnails.",
     icon: "💡",
     searchVolume: 9900,
-    component: "neon",
+    component: "text-effect",
     featured: true,
     faq: [
-      { q: "What format does it export?", a: "PNG with transparent background." },
-      { q: "Can I change the color?", a: "Yes — pick any color or use one of the presets." },
-      { q: "Is there a size limit?", a: "Output is 1200×400 px by default; no limit on text length." },
+      {
+        q: "Can I change the color?",
+        a: "Yes — 6 preset colors, more coming soon.",
+      },
+      {
+        q: "Can I save the result?",
+        a: "Yes — use Print / Save as PDF, or right-click the preview to save the image.",
+      },
     ],
   },
   {
     slug: "fire",
     category: "effects",
     name: "Fire Text Generator",
-    shortDescription: "Turn any text into a fiery image — PNG with transparent background.",
-    longDescription: "Classic fire text — orange, red, and yellow flames around your letters. Export as transparent PNG.",
+    shortDescription: "Turn any text into a fiery image.",
+    longDescription:
+      "Classic fire text with flames around your letters — orange, red, and yellow gradient. Or pick from blue flame, inferno, or toxic green variants.",
     icon: "🔥",
     searchVolume: 1300,
-    component: null,
-    faq: [{ q: "Is the background transparent?", a: "Yes — PNG with full transparency." }],
+    component: "text-effect",
+    faq: [
+      {
+        q: "How many fire styles are there?",
+        a: "4: Classic, Inferno, Blue flame, Toxic.",
+      },
+    ],
   },
   {
     slug: "bubble",
     category: "effects",
     name: "Bubble Letter Generator",
-    shortDescription: "Classic bubble writing — exports as PNG ready for stickers and prints.",
-    longDescription: "Bubble letter style with bold outlines and offset shadows. Great for stickers, t-shirts, posters.",
+    shortDescription:
+      "Classic bubble writing — ready for stickers and prints.",
+    longDescription:
+      "Bubble letter style with bold outlines and offset shadows. Great for stickers, t-shirts, posters. Choose from 5 color schemes.",
     icon: "🫧",
     searchVolume: 5400,
-    component: null,
-    faq: [{ q: "Can I customize colors?", a: "Yes — fill, outline, and shadow colors are all adjustable." }],
+    component: "text-effect",
+    faq: [
+      { q: "Can I customize colors?", a: "Yes — pick from 5 color schemes." },
+    ],
   },
   {
     slug: "cursive",
     category: "effects",
     name: "Cursive Text Generator",
-    shortDescription: "Elegant cursive text — copy paste or download as image.",
-    longDescription: "Multiple cursive fonts from elegant script to casual handwriting. Copy to clipboard or download as image.",
+    shortDescription: "Elegant cursive text in 5 colors, ready to save.",
+    longDescription:
+      "Beautiful cursive script in classic black, rose, royal purple, forest green, or gold ink. Use it for cards, posters, social media graphics.",
     icon: "✒️",
     searchVolume: 14800,
-    component: null,
-    faq: [{ q: "Does it work in social media bios?", a: "Yes — most cursive styles use Unicode characters and work in Instagram, TikTok, Twitter bios." }],
+    component: "text-effect",
+    faq: [
+      {
+        q: "Does it work in social media bios?",
+        a: "This generator outputs styled images. For Unicode bio fonts, see our Unicode font tool (coming soon).",
+      },
+    ],
+  },
+  {
+    slug: "glitch",
+    category: "effects",
+    name: "Glitch Text Generator",
+    shortDescription: "Cyberpunk RGB-split text effect — 4 styles.",
+    longDescription:
+      "The iconic RGB-split glitch effect. Pick from Classic, Strong, Subtle, or Vapor styles. Perfect for music covers, gaming thumbnails, edgy social posts.",
+    icon: "📡",
+    searchVolume: 14800,
+    component: "text-effect",
+    faq: [
+      {
+        q: "What is the glitch effect?",
+        a: "It's the chromatic aberration look — red and cyan copies of the text offset slightly, like a TV signal interference.",
+      },
+    ],
+  },
+  {
+    slug: "gold",
+    category: "effects",
+    name: "Gold Text Generator",
+    shortDescription:
+      "Shiny gold text — classic, rose gold, white gold, bronze.",
+    longDescription:
+      "Luxurious gold letter effect with metallic gradient and glow. 4 finishes: Classic gold, Rose gold, White gold, Bronze. Great for luxury branding, certificates, premium designs.",
+    icon: "🏆",
+    searchVolume: 880,
+    component: "text-effect",
+    faq: [
+      {
+        q: "What finishes are available?",
+        a: "Classic, Rose gold, White gold, Bronze.",
+      },
+    ],
   },
 
   // === ALT-TEXT ===
@@ -185,7 +273,8 @@ export const tools: Tool[] = [
     slug: "alt-text-generator",
     category: "alt-text",
     name: "AI Alt Text Generator",
-    shortDescription: "Generate SEO-friendly alt text for any image in 1 click.",
+    shortDescription:
+      "Generate SEO-friendly alt text for any image in 1 click.",
     longDescription:
       "Drop an image, get accessibility-friendly alt text in seconds. Helps with both screen readers and SEO. Edit before copying.",
     icon: "♿",
@@ -193,8 +282,14 @@ export const tools: Tool[] = [
     component: null,
     featured: true,
     faq: [
-      { q: "Is the alt text SEO-optimized?", a: "Yes — descriptive, keyword-relevant, and under 125 characters." },
-      { q: "Can I bulk-process?", a: "Single images only on the free tier; bulk API coming soon." },
+      {
+        q: "Is the alt text SEO-optimized?",
+        a: "Yes — descriptive, keyword-relevant, and under 125 characters.",
+      },
+      {
+        q: "Can I bulk-process?",
+        a: "Single images only on the free tier; bulk API coming soon.",
+      },
     ],
   },
 
@@ -204,11 +299,17 @@ export const tools: Tool[] = [
     category: "memes",
     name: "AI Meme Generator",
     shortDescription: "Upload a photo, get viral meme captions for it.",
-    longDescription: "AI analyses your image and writes meme-worthy captions. Pick a meme template or use your own image.",
+    longDescription:
+      "AI analyses your image and writes meme-worthy captions. Pick a meme template or use your own image.",
     icon: "😂",
     searchVolume: 27000,
     component: null,
-    faq: [{ q: "Does it understand context?", a: "Yes — it sees what's in your image and writes accordingly." }],
+    faq: [
+      {
+        q: "Does it understand context?",
+        a: "Yes — it sees what's in your image and writes accordingly.",
+      },
+    ],
   },
 ];
 

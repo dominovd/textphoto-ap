@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, JetBrains_Mono } from "next/font/google";
+import { Analytics } from "@vercel/analytics/next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import "./globals.css";
@@ -49,6 +51,9 @@ export const metadata: Metadata = {
     description: "Captions, OCR, text effects, meme makers, alt-text.",
   },
   robots: { index: true, follow: true },
+  verification: {
+    google: "HmZYUvA2DWyceT0J_oS7jP8MjyXMij8Kf_lew1qXId4",
+  },
 };
 
 export default function RootLayout({
@@ -63,6 +68,15 @@ export default function RootLayout({
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
+        {/* Plausible analytics (privacy-respecting, no cookies) */}
+        <Script
+          defer
+          data-domain="textphoto.app"
+          src="https://plausible.io/js/script.js"
+          strategy="afterInteractive"
+        />
+        {/* Vercel Web Analytics */}
+        <Analytics />
       </body>
     </html>
   );

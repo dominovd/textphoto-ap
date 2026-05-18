@@ -41,7 +41,10 @@ export default function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 text-sm text-slate-500 w-64">
+          <Link
+            href="/search"
+            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm text-slate-500 w-64"
+          >
             <svg
               className="w-4 h-4"
               fill="none"
@@ -57,10 +60,7 @@ export default function Header() {
               />
             </svg>
             <span>Search tools…</span>
-            <span className="ml-auto mono text-xs px-1.5 py-0.5 rounded border border-slate-300 bg-white">
-              ⌘K
-            </span>
-          </div>
+          </Link>
           <Link
             href="/captions/instagram-caption-generator"
             className="px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium"
