@@ -70,10 +70,28 @@ export default async function ToolPage({
     .filter((x) => x.slug !== t.slug)
     .slice(0, 5);
 
-  // JSON-LD: SoftwareApplication + FAQPage
+  // JSON-LD: BreadcrumbList + SoftwareApplication + FAQPage
   const jsonLd = {
     "@context": "https://schema.org",
     "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: "https://textphoto.app/" },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: cat?.name ?? t.category,
+            item: `https://textphoto.app/${t.category}`,
+          },
+          {
+            "@type": "ListItem",
+            position: 3,
+            name: t.name,
+            item: `https://textphoto.app/${t.category}/${t.slug}`,
+          },
+        ],
+      },
       {
         "@type": "SoftwareApplication",
         name: t.name,

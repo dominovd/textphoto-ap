@@ -19,8 +19,8 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://textphoto.app"),
   title: {
-    default: "textphoto.app — Free AI tools for photo + text",
-    template: "%s · textphoto.app",
+    default: "TextPhoto — Free AI tools for photo + text",
+    template: "%s · TextPhoto",
   },
   description:
     "Free AI tools for photo and text: caption generators, OCR, text effects, meme makers, alt-text. No sign up.",
@@ -33,18 +33,19 @@ export const metadata: Metadata = {
     "alt text generator",
     "meme generator",
   ],
-  authors: [{ name: "textphoto.app" }],
+  authors: [{ name: "TextPhoto" }],
+  applicationName: "TextPhoto",
   openGraph: {
     type: "website",
-    siteName: "textphoto.app",
-    title: "textphoto.app — Free AI tools for photo + text",
+    siteName: "TextPhoto",
+    title: "TextPhoto — Free AI tools for photo + text",
     description:
       "Captions, OCR, text effects, meme makers, alt-text — all free, all in one place.",
     url: "https://textphoto.app",
   },
   twitter: {
     card: "summary_large_image",
-    title: "textphoto.app — Free AI tools for photo + text",
+    title: "TextPhoto — Free AI tools for photo + text",
     description: "Captions, OCR, text effects, meme makers, alt-text.",
   },
   robots: { index: true, follow: true },

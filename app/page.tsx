@@ -1,8 +1,44 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { categories } from "@/lib/categories";
 import { getFeaturedTools, tools } from "@/lib/tools";
 import CategoryCard from "@/components/CategoryCard";
 import FeaturedToolCard from "@/components/FeaturedToolCard";
+
+export const metadata: Metadata = {
+  alternates: { canonical: "https://textphoto.app/" },
+};
+
+const homeJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://textphoto.app/#organization",
+      name: "TextPhoto",
+      url: "https://textphoto.app",
+      logo: "https://textphoto.app/icon.svg",
+      email: "info@textphoto.app",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://textphoto.app/#website",
+      url: "https://textphoto.app",
+      name: "TextPhoto",
+      description:
+        "Free AI tools for photo and text: captions, OCR, text effects, meme makers, alt-text.",
+      publisher: { "@id": "https://textphoto.app/#organization" },
+      potentialAction: {
+        "@type": "SearchAction",
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: "https://textphoto.app/search?q={search_term_string}",
+        },
+        "query-input": "required name=search_term_string",
+      },
+    },
+  ],
+};
 
 export default function Home() {
   const featured = getFeaturedTools();
@@ -10,6 +46,10 @@ export default function Home() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeJsonLd) }}
+      />
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-slate-200 bg-white">
         <div className="absolute inset-0 grid-pattern opacity-50" />

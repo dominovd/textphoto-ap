@@ -35,8 +35,52 @@ export default async function CategoryPage({
 
   const toolsInCat = getToolsInCategory(category);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          {
+            "@type": "ListItem",
+            position: 1,
+            name: "Home",
+            item: "https://textphoto.app/",
+          },
+          {
+            "@type": "ListItem",
+            position: 2,
+            name: cat.name,
+            item: `https://textphoto.app/${cat.slug}`,
+          },
+        ],
+      },
+      {
+        "@type": "CollectionPage",
+        name: `${cat.name} — Free AI tools`,
+        description: cat.description,
+        url: `https://textphoto.app/${cat.slug}`,
+        mainEntity: {
+          "@type": "ItemList",
+          numberOfItems: toolsInCat.length,
+          itemListElement: toolsInCat.map((t, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            url: `https://textphoto.app/${t.category}/${t.slug}`,
+            name: t.name,
+          })),
+        },
+      },
+    ],
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       <nav className="flex items-center gap-2 text-sm text-slate-500 mb-6">
         <Link href="/" className="hover:text-brand-600">
           Home

@@ -54,10 +54,16 @@ export default function Footer() {
             Resources
           </h4>
           <ul className="space-y-1.5 text-slate-600">
-            <li>Blog</li>
+            <li>Blog (coming soon)</li>
             <li>API (coming soon)</li>
-            <li>Browser extension</li>
-            <li>Submit a tool idea</li>
+            <li>
+              <a
+                href="mailto:info@textphoto.app?subject=Tool%20idea"
+                className="hover:text-brand-600"
+              >
+                Submit a tool idea
+              </a>
+            </li>
           </ul>
         </div>
         <div>
@@ -65,10 +71,26 @@ export default function Footer() {
             Company
           </h4>
           <ul className="space-y-1.5 text-slate-600">
-            <li>About</li>
-            <li>Contact</li>
-            <li>Privacy</li>
-            <li>Terms</li>
+            <li>
+              <Link href="/about" className="hover:text-brand-600">
+                About
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" className="hover:text-brand-600">
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacy" className="hover:text-brand-600">
+                Privacy
+              </Link>
+            </li>
+            <li>
+              <Link href="/terms" className="hover:text-brand-600">
+                Terms
+              </Link>
+            </li>
           </ul>
         </div>
       </div>
