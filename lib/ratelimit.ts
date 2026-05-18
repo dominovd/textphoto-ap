@@ -3,7 +3,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 
 // --- Tunable defaults --------------------------------------------------------
 // Per-IP per-endpoint limits
-const HOURLY_PER_IP = 5;
+const HOURLY_PER_IP = 7;
 const DAILY_PER_IP = 15;
 // Global safety cap across ALL endpoints + ALL users
 // 1000 ~= $5/day at Haiku 4.5 (~$0.005/call)
