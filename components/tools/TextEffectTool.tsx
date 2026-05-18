@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { getEffect } from "@/lib/effects";
 
 export default function TextEffectTool({ slug }: { slug: string }) {
@@ -10,6 +10,9 @@ export default function TextEffectTool({ slug }: { slug: string }) {
   const [presetIdx, setPresetIdx] = useState(0);
   const [bgIdx, setBgIdx] = useState(config?.defaultBg ?? 0);
   const [size, setSize] = useState(config?.defaultSize || 80);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState<string>("");
+  const previewRef = useRef<HTMLDivElement>(null);
 
   const preview = useMemo(() => {
     if (!config) return null;
@@ -26,7 +29,7 @@ export default function TextEffectTool({ slug }: { slug: string }) {
         wordBreak: "break-word" as const,
       },
     };
-  }, [config, presetIdx, bgIdx, size]);
+  }, [config, presetIdx, size]);
 
   if (!config || !preview) {
     return (
@@ -37,6 +40,34 @@ export default function TextEffectTool({ slug }: { slug: string }) {
   }
 
   const bg = config.backgrounds[bgIdx];
+  const isTransparent = bg.name === "Transparent";
+
+  async function onDownload() {
+    if (!previewRef.current) return;
+    setDownloading(true);
+    setDownloadError("");
+    try {
+      const { toPng } = await import("html-to-image");
+      const dataUrl = await toPng(previewRef.current, {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: isTransparent ? undefined : undefined,
+        // If transparent: don't paint a backdrop; otherwise the bg element provides it
+        skipFonts: false,
+      });
+      const link = document.createElement("a");
+      link.download = `textphoto-${slug}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (e) {
+      console.error(e);
+      setDownloadError(
+        e instanceof Error ? e.message : "Download failed. Try again.",
+      );
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   return (
     <div className="grid lg:grid-cols-3 gap-6">
@@ -65,7 +96,7 @@ export default function TextEffectTool({ slug }: { slug: string }) {
               }`}
             >
               <span
-                className="inline-block w-4 h-4 rounded-full"
+                className="inline-block w-4 h-4 rounded-full shrink-0"
                 style={{ backgroundColor: pr.swatch }}
               />
               <span className="text-left">{pr.name}</span>
@@ -101,19 +132,26 @@ export default function TextEffectTool({ slug }: { slug: string }) {
         />
 
         <button
-          onClick={() => window.print()}
-          className="mt-6 w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold"
+          onClick={onDownload}
+          disabled={downloading}
+          className="mt-6 w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 disabled:bg-brand-300 disabled:cursor-not-allowed text-white font-semibold"
         >
-          Print / Save as PDF
+          {downloading ? "Generating PNG…" : "Download as PNG"}
         </button>
+        {downloadError && (
+          <p className="text-xs text-red-600 mt-2 text-center">
+            {downloadError}
+          </p>
+        )}
         <p className="text-xs text-slate-400 mt-2 text-center">
-          Or right-click preview → Save Image (PNG export coming soon)
+          High-resolution 2x PNG · transparent or with background
         </p>
       </div>
 
       {/* Preview */}
       <div className="lg:col-span-2 rounded-2xl border border-slate-200 overflow-hidden">
         <div
+          ref={previewRef}
           className={`${bg.className} min-h-[480px] flex items-center justify-center p-8`}
         >
           <span style={preview.style} className="text-center">

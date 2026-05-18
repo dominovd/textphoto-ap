@@ -2,10 +2,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getCategory } from "@/lib/categories";
-import { getTool, getToolsInCategory, tools } from "@/lib/tools";
-import InstagramCaptionTool from "@/components/tools/InstagramCaptionTool";
+import {
+  getTool,
+  getToolsInCategory,
+  tools,
+  getCaptionPlatform,
+} from "@/lib/tools";
+import PhotoCaptionTool from "@/components/tools/PhotoCaptionTool";
 import OCRTool from "@/components/tools/OCRTool";
 import TextEffectTool from "@/components/tools/TextEffectTool";
+import AltTextTool from "@/components/tools/AltTextTool";
+import MemeTool from "@/components/tools/MemeTool";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -35,12 +42,16 @@ export async function generateMetadata({
 
 function renderTool(componentKey: string | null, slug: string) {
   switch (componentKey) {
-    case "instagram-caption":
-      return <InstagramCaptionTool />;
+    case "photo-caption":
+      return <PhotoCaptionTool platform={getCaptionPlatform(slug)} />;
     case "ocr":
       return <OCRTool />;
     case "text-effect":
       return <TextEffectTool slug={slug} />;
+    case "alt-text":
+      return <AltTextTool />;
+    case "meme":
+      return <MemeTool />;
     default:
       return (
         <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-white">

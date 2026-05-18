@@ -1,27 +1,27 @@
 import { NextResponse } from "next/server";
-import {
-  getAnthropic,
-  MODEL_VISION,
-  imageBlock,
-  fileToBase64,
-} from "@/lib/ai";
+import { visionPrompt, extractJsonArray, validateImage } from "@/lib/ai";
+import { checkRateLimit, getClientIp } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
 const VIBE_INSTRUCTIONS: Record<string, string> = {
   aesthetic:
-    "Aesthetic, moody, poetic Instagram captions. Short to medium length. Calm, dreamy tone.",
-  funny:
-    "Funny, witty Instagram captions with self-aware humour. Punchy one-liners.",
-  romantic:
-    "Romantic, warm Instagram captions. Heartfelt but not cheesy.",
-  savage:
-    "Confident, savage Instagram captions with edge. Empowering, slightly cocky.",
-  professional:
-    "Professional LinkedIn-style captions. Thoughtful, value-driven, not corporate.",
-  inspirational:
-    "Inspirational Instagram captions. Encouraging, motivational, not preachy.",
+    "Aesthetic, moody, poetic. Short to medium length. Calm, dreamy tone.",
+  funny: "Funny, witty, self-aware humour. Punchy one-liners.",
+  romantic: "Romantic, warm. Heartfelt but not cheesy.",
+  savage: "Confident, savage with edge. Empowering, slightly cocky.",
+  professional: "Professional, thoughtful, value-driven, not corporate.",
+  inspirational: "Inspirational, encouraging, motivational, not preachy.",
+};
+
+const PLATFORM_INSTRUCTIONS: Record<string, string> = {
+  instagram:
+    "Format: Instagram captions. Length 1-3 lines. Up to ~280 chars. Storytelling and aesthetic are valued.",
+  tiktok:
+    "Format: TikTok captions. SHORT — strong hook in first 3 words, under 100 chars each. Punchy, scroll-stopping. Include 2-3 trending hashtags like #fyp #foryou #viral plus topic-specific.",
+  universal:
+    "Format: universal caption for any platform. Short to medium length (under 200 chars). Work for IG, FB, X.",
 };
 
 const VIBE_HASHTAGS: Record<string, string[]> = {
@@ -34,25 +34,32 @@ const VIBE_HASHTAGS: Record<string, string[]> = {
 };
 
 export async function POST(req: Request) {
+  // Rate limit FIRST — before doing any expensive work
+  const ip = getClientIp(req);
+  const limit = await checkRateLimit(ip, "caption");
+  if (!limit.ok) {
+    return NextResponse.json(
+      { error: limit.error, reason: limit.reason },
+      {
+        status: limit.status,
+        headers: { "Retry-After": String(limit.retryAfter) },
+      },
+    );
+  }
+
   try {
     const form = await req.formData();
     const file = form.get("image") as File | null;
+    validateImage(file);
+
+    const platform = (form.get("platform") as string) || "instagram";
     const vibe = (form.get("vibe") as string) || "aesthetic";
     const hashtags = form.get("hashtags") === "true";
     const emojis = form.get("emojis") === "true";
 
-    if (!file) {
-      return NextResponse.json({ error: "No image uploaded" }, { status: 400 });
-    }
-    if (file.size > 10 * 1024 * 1024) {
-      return NextResponse.json(
-        { error: "Image too large (max 10 MB)" },
-        { status: 413 },
-      );
-    }
-
-    const instruction =
-      VIBE_INSTRUCTIONS[vibe] || VIBE_INSTRUCTIONS.aesthetic;
+    const vibeInstr = VIBE_INSTRUCTIONS[vibe] || VIBE_INSTRUCTIONS.aesthetic;
+    const platformInstr =
+      PLATFORM_INSTRUCTIONS[platform] || PLATFORM_INSTRUCTIONS.instagram;
     const hashtagHint = hashtags
       ? `Include 2-3 relevant hashtags at the end. Suggested base: ${VIBE_HASHTAGS[vibe]?.join(" ") || ""}.`
       : "Do not include any hashtags.";
@@ -60,65 +67,31 @@ export async function POST(req: Request) {
       ? "Include 1-2 relevant emojis where natural."
       : "Do not include any emojis.";
 
-    const prompt = `Look at this image. Generate exactly 10 Instagram captions for it.
+    const prompt = `Look at this image. Generate exactly 10 captions for it.
 
-Style: ${instruction}
+${platformInstr}
+Tone: ${vibeInstr}
 ${hashtagHint}
 ${emojiHint}
 
 Return ONLY a JSON array of 10 strings, nothing else. Example: ["caption 1", "caption 2", ...]
-Each caption should be 1 line, max 280 characters.`;
+Each caption on one line.`;
 
-    const { base64, mediaType } = await fileToBase64(file);
-    const client = getAnthropic();
+    const text = await visionPrompt(file, prompt, 1200);
+    const lines = extractJsonArray(text).slice(0, 10);
 
-    const response = await client.messages.create({
-      model: MODEL_VISION,
-      max_tokens: 1500,
-      messages: [
-        {
-          role: "user",
-          content: [imageBlock(base64, mediaType), { type: "text", text: prompt }],
-        },
-      ],
+    const result = lines.map((line) => {
+      const t = String(line).trim();
+      const hashtagCount = (t.match(/#\w+/g) || []).length;
+      return { text: t, chars: t.length, hashtags: hashtagCount };
     });
 
-    // Extract text from response
-    const text = response.content
-      .filter((c) => c.type === "text")
-      .map((c) => (c as { type: "text"; text: string }).text)
-      .join("")
-      .trim();
-
-    // Try to extract JSON array
-    let captions: string[] = [];
-    const match = text.match(/\[[\s\S]*\]/);
-    if (match) {
-      try {
-        captions = JSON.parse(match[0]);
-      } catch {
-        captions = text
-          .split(/\n+/)
-          .map((l) => l.replace(/^\s*[-*\d.]+\s*/, "").replace(/^["']|["']$/g, "").trim())
-          .filter(Boolean)
-          .slice(0, 10);
-      }
-    } else {
-      captions = text
-        .split(/\n+/)
-        .map((l) => l.replace(/^\s*[-*\d.]+\s*/, "").replace(/^["']|["']$/g, "").trim())
-        .filter(Boolean)
-        .slice(0, 10);
-    }
-
-    const result = captions.map((line) => {
-      const text = String(line).trim();
-      const hashtagCount = (text.match(/#\w+/g) || []).length;
-      return { text, chars: text.length, hashtags: hashtagCount };
+    return NextResponse.json({
+      captions: result,
+      remaining: limit.remaining,
     });
-
-    return NextResponse.json({ captions: result });
   } catch (err) {
+    if (err instanceof Response) return err;
     console.error("/api/caption error:", err);
     const msg = err instanceof Error ? err.message : "Internal error";
     return NextResponse.json({ error: msg }, { status: 500 });

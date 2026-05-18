@@ -6,12 +6,15 @@ export type Tool = {
   longDescription: string;
   icon: string;
   searchVolume: number;
-  // Component dispatcher key.
-  // "text-effect" uses the generic TextEffectTool keyed by `slug` via lib/effects.ts
+  // Component dispatcher key. The dispatcher in app/[category]/[tool]/page.tsx
+  // maps these to React components. "text-effect" + "photo-caption" use generic
+  // components keyed by the tool slug.
   component:
-    | "instagram-caption"
+    | "photo-caption"
     | "ocr"
     | "text-effect"
+    | "alt-text"
+    | "meme"
     | null;
   faq: { q: string; a: string }[];
   featured?: boolean;
@@ -28,7 +31,7 @@ export const tools: Tool[] = [
       "Our AI looks at what's actually in your photo — the subject, the colours, the mood — and writes captions that fit the moment. Pick a vibe (aesthetic, funny, romantic, savage) and the model adjusts tone, length, and hashtag relevance accordingly.",
     icon: "📷",
     searchVolume: 8100,
-    component: "instagram-caption",
+    component: "photo-caption",
     featured: true,
     faq: [
       {
@@ -55,15 +58,19 @@ export const tools: Tool[] = [
     name: "TikTok Caption Generator",
     shortDescription: "Hooks + hashtags optimised for the For You page.",
     longDescription:
-      "Generate TikTok captions designed for the For You algorithm — short hooks, trending hashtags, emoji placement that boosts engagement.",
+      "Generate TikTok captions designed for the For You algorithm — short hooks under 100 chars, trending hashtags like #fyp #foryou, emoji placement that boosts engagement.",
     icon: "🎵",
     searchVolume: 720,
-    component: null,
+    component: "photo-caption",
     faq: [
       { q: "Is it free?", a: "Yes, completely free." },
       {
-        q: "Does it suggest hashtags?",
-        a: "Yes — based on what's trending and relevant to your video.",
+        q: "Does it suggest trending hashtags?",
+        a: "Yes — #fyp #foryou #viral are always included, plus topic-specific ones based on your photo.",
+      },
+      {
+        q: "How long should TikTok captions be?",
+        a: "Short — under 100 chars. The hook is in the first 3 words.",
       },
     ],
   },
@@ -71,16 +78,16 @@ export const tools: Tool[] = [
     slug: "ai-photo-caption-generator",
     category: "captions",
     name: "AI Photo Caption Generator",
-    shortDescription: "Universal caption AI — works for any photo.",
+    shortDescription: "Universal caption AI — works for any platform.",
     longDescription:
-      "Universal AI caption generator. Works for any photo: products, food, travel, portraits. Choose a platform and tone, get 10 captions.",
+      "Universal AI caption generator. Works for any photo: products, food, travel, portraits. Pick a vibe and get 10 captions that fit Instagram, Facebook, X, or anywhere else.",
     icon: "🖼️",
     searchVolume: 2400,
-    component: null,
+    component: "photo-caption",
     faq: [
       {
         q: "Which platforms does it support?",
-        a: "Instagram, TikTok, Facebook, LinkedIn, Pinterest, Twitter/X.",
+        a: "Output is platform-agnostic — works for Instagram, Facebook, LinkedIn, Pinterest, Twitter/X. For platform-specific tone, use our Instagram or TikTok caption generators.",
       },
     ],
   },
@@ -167,7 +174,7 @@ export const tools: Tool[] = [
     shortDescription:
       "Glowing neon letters for posters, social media, Twitch overlays.",
     longDescription:
-      "Type your text, pick a color, get a glowing neon image — perfect for posters, Twitch overlays, video thumbnails.",
+      "Type your text, pick a color, get a glowing neon image — perfect for posters, Twitch overlays, video thumbnails. Export as transparent PNG.",
     icon: "💡",
     searchVolume: 9900,
     component: "text-effect",
@@ -175,11 +182,11 @@ export const tools: Tool[] = [
     faq: [
       {
         q: "Can I change the color?",
-        a: "Yes — 6 preset colors, more coming soon.",
+        a: "Yes — 6 preset colors.",
       },
       {
-        q: "Can I save the result?",
-        a: "Yes — use Print / Save as PDF, or right-click the preview to save the image.",
+        q: "How do I save it?",
+        a: "Click Download as PNG — exports at 2x resolution. Use 'Transparent' background for overlays.",
       },
     ],
   },
@@ -189,7 +196,7 @@ export const tools: Tool[] = [
     name: "Fire Text Generator",
     shortDescription: "Turn any text into a fiery image.",
     longDescription:
-      "Classic fire text with flames around your letters — orange, red, and yellow gradient. Or pick from blue flame, inferno, or toxic green variants.",
+      "Classic fire text with flames around your letters — orange, red, and yellow gradient. Or pick from blue flame, inferno, or toxic green variants. Export as PNG.",
     icon: "🔥",
     searchVolume: 1300,
     component: "text-effect",
@@ -207,7 +214,7 @@ export const tools: Tool[] = [
     shortDescription:
       "Classic bubble writing — ready for stickers and prints.",
     longDescription:
-      "Bubble letter style with bold outlines and offset shadows. Great for stickers, t-shirts, posters. Choose from 5 color schemes.",
+      "Bubble letter style with bold outlines and offset shadows. Great for stickers, t-shirts, posters. 5 color schemes, downloads as PNG.",
     icon: "🫧",
     searchVolume: 5400,
     component: "text-effect",
@@ -276,15 +283,19 @@ export const tools: Tool[] = [
     shortDescription:
       "Generate SEO-friendly alt text for any image in 1 click.",
     longDescription:
-      "Drop an image, get accessibility-friendly alt text in seconds. Helps with both screen readers and SEO. Edit before copying.",
+      "Drop an image, get 3 alt text variants in seconds — short for SEO, medium for general use, detailed for complex images. Helps with both screen readers and SEO.",
     icon: "♿",
     searchVolume: 1300,
-    component: null,
+    component: "alt-text",
     featured: true,
     faq: [
       {
+        q: "Why 3 variants?",
+        a: "Different contexts need different lengths. Short (<80 chars) is best for SEO/quick screen readers; medium (80-125) is the recommended default; detailed (125-200) is for complex images.",
+      },
+      {
         q: "Is the alt text SEO-optimized?",
-        a: "Yes — descriptive, keyword-relevant, and under 125 characters.",
+        a: "Yes — concrete, descriptive, never starts with 'image of', includes key visual elements.",
       },
       {
         q: "Can I bulk-process?",
@@ -298,16 +309,20 @@ export const tools: Tool[] = [
     slug: "ai-meme-generator",
     category: "memes",
     name: "AI Meme Generator",
-    shortDescription: "Upload a photo, get viral meme captions for it.",
+    shortDescription: "Upload a photo, get 5 viral meme captions for it.",
     longDescription:
-      "AI analyses your image and writes meme-worthy captions. Pick a meme template or use your own image.",
+      "AI looks at your photo and writes 5 meme-worthy captions in the style of your choice — relatable, savage, wholesome, Gen-Z, or a mix.",
     icon: "😂",
     searchVolume: 27000,
-    component: null,
+    component: "meme",
     faq: [
       {
         q: "Does it understand context?",
-        a: "Yes — it sees what's in your image and writes accordingly.",
+        a: "Yes — it sees what's in your image and writes captions tailored to it.",
+      },
+      {
+        q: "What styles can I pick?",
+        a: "Mixed, Relatable ('when you...'), Savage, Wholesome, Gen Z.",
       },
     ],
   },
@@ -323,4 +338,13 @@ export function getToolsInCategory(category: string): Tool[] {
 
 export function getFeaturedTools(): Tool[] {
   return tools.filter((t) => t.featured);
+}
+
+// Map caption slug → platform for the dispatcher
+export function getCaptionPlatform(
+  slug: string,
+): "instagram" | "tiktok" | "universal" {
+  if (slug.includes("tiktok")) return "tiktok";
+  if (slug.includes("instagram")) return "instagram";
+  return "universal";
 }

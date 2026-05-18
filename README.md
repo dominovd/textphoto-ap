@@ -71,26 +71,92 @@ That's it — the category page and tool page rebuild automatically.
 
 ## AI integration
 
-`/api/caption` and `/api/ocr` use Anthropic Claude (vision-capable Sonnet model) — see `lib/ai.ts`.
+All AI endpoints (`/api/caption`, `/api/ocr`, `/api/alt-text`, `/api/meme`) use **Claude Haiku 4.5** with vision — ~3x cheaper than Sonnet and quality is great for these tasks. Model is configurable in `lib/ai.ts`.
 
-**Required env var on Vercel:** `ANTHROPIC_API_KEY` — get one at https://console.anthropic.com.
+**Required env vars on Vercel:**
+
+| Var | Source | Why |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | https://console.anthropic.com | AI model access |
+| `UPSTASH_REDIS_REST_URL` | https://console.upstash.com | Rate limiting (see below) |
+| `UPSTASH_REDIS_REST_TOKEN` | Same Upstash page | Rate limiting |
+| `DAILY_AI_BUDGET_CALLS` | optional, default 1000 | Site-wide daily safety cap (~$5/day at Haiku pricing) |
 
 To set in Vercel:
 1. Project → Settings → Environment Variables.
-2. Add `ANTHROPIC_API_KEY` with your key, scope: Production, Preview, Development.
-3. Redeploy.
+2. Add each var, scope: Production, Preview, Development.
+3. Redeploy (env vars aren't picked up until next deploy).
 
 For local dev, create `.env.local`:
 
 ```
 ANTHROPIC_API_KEY=sk-ant-...
+UPSTASH_REDIS_REST_URL=https://...upstash.io
+UPSTASH_REDIS_REST_TOKEN=...
 ```
 
-Models used (configurable in `lib/ai.ts`):
-- `claude-sonnet-4-5` — vision for captions and OCR
-- `claude-haiku-4-5-20251001` — fast text-only (not used yet, reserved for future tools)
+If Upstash env vars are missing, rate limiting **silently fails open** (allows all requests) and prints a warning in prod logs. In dev this is fine; in prod you'll want it set.
 
-To switch to OpenAI, replace the SDK calls in `app/api/caption/route.ts` and `app/api/ocr/route.ts` — the prompts and parsing logic stay similar.
+### Pricing model (current setup)
+
+At Haiku 4.5 pricing:
+
+| Tool | Cost per call |
+|---|---|
+| Caption (10 outputs) | ~$0.005 |
+| OCR | ~$0.007 |
+| Alt-text (3 variants) | ~$0.003 |
+| Meme (5 captions) | ~$0.004 |
+
+The global daily cap (`DAILY_AI_BUDGET_CALLS=1000`) keeps maximum daily spend at ~$5.
+
+### Switching providers
+
+To swap to OpenAI: replace the SDK calls in `lib/ai.ts` and the 4 API routes — the prompts and parsing logic stay similar.
+
+## Rate limiting
+
+We use **Upstash Redis** (free tier, 10k commands/day) for per-IP rate limiting.
+
+**Default limits (configurable in `lib/ratelimit.ts`):**
+- 5 requests per hour, per IP, per endpoint
+- 15 requests per day, per IP, per endpoint
+- 1000 total AI requests per day, site-wide (= the global $5/day cap)
+
+When a limit is hit, the API returns 429 (per-IP) or 503 (global) with a `Retry-After` header and a human-friendly error message. Frontends display this directly to the user.
+
+### Setting up Upstash (one-time, ~5 minutes)
+
+1. Sign up free at https://console.upstash.com.
+2. Click **Create Database** → name it `textphoto-prod` → pick a region close to your Vercel deployment → choose **Global** or **Regional** (Global is fine).
+3. On the database page, scroll to **REST API**. Copy:
+   - `UPSTASH_REDIS_REST_URL`
+   - `UPSTASH_REDIS_REST_TOKEN`
+4. Add both to Vercel → Project → Settings → Environment Variables.
+5. Redeploy.
+
+### Loosening or tightening limits
+
+Edit `lib/ratelimit.ts`:
+
+```ts
+const HOURLY_PER_IP = 5;   // raise to 20 for friendlier UX
+const DAILY_PER_IP = 15;   // raise to 50
+```
+
+Or set the global daily cap via env var:
+```
+DAILY_AI_BUDGET_CALLS=2000
+```
+
+### Fallback behavior
+
+- **User hits hourly cap** → 429 with "Try again in X min" message
+- **User hits daily cap** → 429 with "Resets in Xh" message
+- **Site-wide budget exhausted** → 503 with "Resets at 00:00 UTC. Try our text-effect tools (no AI required)" message
+- **Anthropic API down** → 500 with error from SDK (visible to user, retry-friendly)
+- **Upstash down or not configured** → fails open (allows all requests, logs a warning)
+- **Text-effect tools** (fire, neon, bubble, cursive, glitch, gold) — **never** hit AI, always work regardless of limits.
 
 ## Analytics
 
