@@ -1,0 +1,225 @@
+export type Tool = {
+  slug: string;
+  category: string;
+  name: string;
+  shortDescription: string;
+  longDescription: string;
+  icon: string;
+  searchVolume: number;
+  // Component to render in the tool page (one of "instagram-caption" | "ocr" | "neon" | null)
+  component: "instagram-caption" | "ocr" | "neon" | null;
+  faq: { q: string; a: string }[];
+  featured?: boolean;
+};
+
+export const tools: Tool[] = [
+  // === CAPTIONS ===
+  {
+    slug: "instagram-caption-generator",
+    category: "captions",
+    name: "Instagram Caption Generator",
+    shortDescription: "Drop a photo → 10 caption ideas with hashtags.",
+    longDescription:
+      "Our AI looks at what's actually in your photo — the subject, the colours, the mood — and writes captions that fit the moment. Pick a vibe (aesthetic, funny, romantic, savage) and the model adjusts tone, length, and hashtag relevance accordingly.",
+    icon: "📷",
+    searchVolume: 8100,
+    component: "instagram-caption",
+    featured: true,
+    faq: [
+      {
+        q: "Is this completely free?",
+        a: "Yes. No sign up, no credit card. Soft daily limit for abuse prevention.",
+      },
+      {
+        q: "Will my photo be stored or used to train AI?",
+        a: "No. Photos are processed and deleted from our servers within 24 hours. Never used for training.",
+      },
+      {
+        q: "Can I use the captions commercially?",
+        a: "Yes — for personal posts, brand pages, client work, anywhere.",
+      },
+      {
+        q: "What's the max photo size?",
+        a: "10 MB. We auto-compress before sending to the model.",
+      },
+    ],
+  },
+  {
+    slug: "tiktok-caption-generator",
+    category: "captions",
+    name: "TikTok Caption Generator",
+    shortDescription: "Hooks + hashtags optimised for the For You page.",
+    longDescription:
+      "Generate TikTok captions designed for the For You algorithm — short hooks, trending hashtags, emoji placement that boosts engagement.",
+    icon: "🎵",
+    searchVolume: 720,
+    component: null,
+    faq: [
+      { q: "Is it free?", a: "Yes, completely free." },
+      { q: "Does it suggest hashtags?", a: "Yes — based on what's trending and relevant to your video." },
+    ],
+  },
+  {
+    slug: "ai-photo-caption-generator",
+    category: "captions",
+    name: "AI Photo Caption Generator",
+    shortDescription: "Universal caption AI — works for any photo.",
+    longDescription:
+      "Universal AI caption generator. Works for any photo: products, food, travel, portraits. Choose a platform and tone, get 10 captions.",
+    icon: "🖼️",
+    searchVolume: 2400,
+    component: null,
+    faq: [
+      { q: "Which platforms does it support?", a: "Instagram, TikTok, Facebook, LinkedIn, Pinterest, Twitter/X." },
+    ],
+  },
+  {
+    slug: "instagram-bio-generator",
+    category: "captions",
+    name: "Instagram Bio Generator",
+    shortDescription: "Bio ideas in 3 styles: aesthetic, funny, pro.",
+    longDescription:
+      "Generate Instagram bio ideas fitting your niche. Add your keywords, pick a vibe, get 10 bios fitting the 150-char limit.",
+    icon: "👤",
+    searchVolume: 5400,
+    component: null,
+    faq: [{ q: "Does it include emojis?", a: "Yes, optional." }],
+  },
+
+  // === OCR ===
+  {
+    slug: "image-to-text",
+    category: "ocr",
+    name: "Image to Text (OCR online)",
+    shortDescription: "Extract text from any image — receipts, screenshots, handwriting, scanned docs.",
+    longDescription:
+      "Drop any image and get the text inside it — instantly. Works on receipts, screenshots, scanned documents, even handwritten notes. Supports 30+ languages.",
+    icon: "🔤",
+    searchVolume: 22000,
+    component: "ocr",
+    featured: true,
+    faq: [
+      { q: "What file formats are supported?", a: "PNG, JPG, JPEG, WEBP, GIF. Max 10 MB." },
+      { q: "Does it work with handwriting?", a: "Yes — accuracy is best with clear, dark-on-light handwriting." },
+      { q: "Is my image stored?", a: "No. Images are deleted from our servers immediately after processing." },
+      { q: "Which languages are supported?", a: "30+ languages including English, Spanish, French, German, Russian, Chinese, Japanese, Korean, Arabic." },
+    ],
+  },
+  {
+    slug: "handwriting-to-text",
+    category: "ocr",
+    name: "Handwriting to Text",
+    shortDescription: "Turn handwritten notes into editable text.",
+    longDescription: "AI handwriting recognition. Upload a photo of handwritten notes or letters and get editable digital text.",
+    icon: "✍️",
+    searchVolume: 4400,
+    component: null,
+    faq: [{ q: "How accurate is it?", a: "85-95% for clear handwriting, lower for cursive or messy writing." }],
+  },
+  {
+    slug: "translate-from-photo",
+    category: "ocr",
+    name: "Translate Text from Photo",
+    shortDescription: "Extract + translate text from any image.",
+    longDescription: "Two steps in one — OCR + translation. Useful for menus, signs, documents in a foreign language.",
+    icon: "🌐",
+    searchVolume: 9900,
+    component: null,
+    faq: [{ q: "How many languages?", a: "30+ for OCR, 100+ for translation." }],
+  },
+
+  // === EFFECTS ===
+  {
+    slug: "neon",
+    category: "effects",
+    name: "Neon Text Generator",
+    shortDescription: "Glowing neon letters for posters, social media, Twitch overlays.",
+    longDescription:
+      "Type your text, pick a color, get a glowing neon image — ready to download as PNG with transparent background. Perfect for posters, Twitch overlays, video thumbnails.",
+    icon: "💡",
+    searchVolume: 9900,
+    component: "neon",
+    featured: true,
+    faq: [
+      { q: "What format does it export?", a: "PNG with transparent background." },
+      { q: "Can I change the color?", a: "Yes — pick any color or use one of the presets." },
+      { q: "Is there a size limit?", a: "Output is 1200×400 px by default; no limit on text length." },
+    ],
+  },
+  {
+    slug: "fire",
+    category: "effects",
+    name: "Fire Text Generator",
+    shortDescription: "Turn any text into a fiery image — PNG with transparent background.",
+    longDescription: "Classic fire text — orange, red, and yellow flames around your letters. Export as transparent PNG.",
+    icon: "🔥",
+    searchVolume: 1300,
+    component: null,
+    faq: [{ q: "Is the background transparent?", a: "Yes — PNG with full transparency." }],
+  },
+  {
+    slug: "bubble",
+    category: "effects",
+    name: "Bubble Letter Generator",
+    shortDescription: "Classic bubble writing — exports as PNG ready for stickers and prints.",
+    longDescription: "Bubble letter style with bold outlines and offset shadows. Great for stickers, t-shirts, posters.",
+    icon: "🫧",
+    searchVolume: 5400,
+    component: null,
+    faq: [{ q: "Can I customize colors?", a: "Yes — fill, outline, and shadow colors are all adjustable." }],
+  },
+  {
+    slug: "cursive",
+    category: "effects",
+    name: "Cursive Text Generator",
+    shortDescription: "Elegant cursive text — copy paste or download as image.",
+    longDescription: "Multiple cursive fonts from elegant script to casual handwriting. Copy to clipboard or download as image.",
+    icon: "✒️",
+    searchVolume: 14800,
+    component: null,
+    faq: [{ q: "Does it work in social media bios?", a: "Yes — most cursive styles use Unicode characters and work in Instagram, TikTok, Twitter bios." }],
+  },
+
+  // === ALT-TEXT ===
+  {
+    slug: "alt-text-generator",
+    category: "alt-text",
+    name: "AI Alt Text Generator",
+    shortDescription: "Generate SEO-friendly alt text for any image in 1 click.",
+    longDescription:
+      "Drop an image, get accessibility-friendly alt text in seconds. Helps with both screen readers and SEO. Edit before copying.",
+    icon: "♿",
+    searchVolume: 1300,
+    component: null,
+    featured: true,
+    faq: [
+      { q: "Is the alt text SEO-optimized?", a: "Yes — descriptive, keyword-relevant, and under 125 characters." },
+      { q: "Can I bulk-process?", a: "Single images only on the free tier; bulk API coming soon." },
+    ],
+  },
+
+  // === MEMES ===
+  {
+    slug: "ai-meme-generator",
+    category: "memes",
+    name: "AI Meme Generator",
+    shortDescription: "Upload a photo, get viral meme captions for it.",
+    longDescription: "AI analyses your image and writes meme-worthy captions. Pick a meme template or use your own image.",
+    icon: "😂",
+    searchVolume: 27000,
+    component: null,
+    faq: [{ q: "Does it understand context?", a: "Yes — it sees what's in your image and writes accordingly." }],
+  },
+];
+
+export function getTool(category: string, slug: string): Tool | undefined {
+  return tools.find((t) => t.category === category && t.slug === slug);
+}
+
+export function getToolsInCategory(category: string): Tool[] {
+  return tools.filter((t) => t.category === category);
+}
+
+export function getFeaturedTools(): Tool[] {
+  return tools.filter((t) => t.featured);
+}
