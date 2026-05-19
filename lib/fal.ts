@@ -328,6 +328,23 @@ async function falNanoBanana(
   return url;
 }
 
+// Ideogram v3 uses a string enum for image_size, not aspect_ratio
+function aspectToIdeogramSize(ar: AspectRatio): string {
+  switch (ar) {
+    case "16:9":
+      return "landscape_16_9";
+    case "9:16":
+      return "portrait_16_9";
+    case "4:3":
+      return "landscape_4_3";
+    case "3:4":
+      return "portrait_4_3";
+    case "1:1":
+    default:
+      return "square_hd";
+  }
+}
+
 async function falIdeogram(
   prompt: string,
   aspectRatio: AspectRatio,
@@ -336,7 +353,7 @@ async function falIdeogram(
   const result = await fal.subscribe("fal-ai/ideogram/v3", {
     input: {
       prompt,
-      aspect_ratio: aspectRatio,
+      image_size: aspectToIdeogramSize(aspectRatio),
       rendering_speed: "BALANCED",
     },
     logs: false,
