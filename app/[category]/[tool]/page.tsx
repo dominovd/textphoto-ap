@@ -194,16 +194,6 @@ export default async function ToolPage({
               </ul>
             </div>
           )}
-          <div className="bg-gradient-to-br from-brand-500 to-pink-500 rounded-2xl p-6 text-white">
-            <h3 className="font-semibold mb-2 text-sm">Want this as an API?</h3>
-            <p className="text-xs opacity-90 mb-3">
-              We&apos;ll send early access when our API launches.
-            </p>
-            <input
-              className="w-full px-3 py-2 rounded-lg text-slate-900 text-sm"
-              placeholder="you@email.com"
-            />
-          </div>
         </aside>
       </div>
     </div>
