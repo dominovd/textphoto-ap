@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { visionPrompt, extractJsonObject, validateImage } from "@/lib/ai";
+import {
+  visionPrompt,
+  extractJsonObject,
+  validateImage,
+  TOOL_MODELS,
+} from "@/lib/ai";
 import { checkRateLimit, getClientIp } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
@@ -45,7 +50,10 @@ Guidelines:
 Return ONLY a JSON object: { "short": "...", "medium": "...", "detailed": "..." }
 Output JSON only, no other text.`;
 
-    const text = await visionPrompt(file, prompt, 400);
+    const text = await visionPrompt(file, prompt, {
+      model: TOOL_MODELS.altText,
+      maxTokens: 400,
+    });
     const parsed = extractJsonObject<AltTextResponse>(text);
 
     if (!parsed || !parsed.short || !parsed.medium || !parsed.detailed) {

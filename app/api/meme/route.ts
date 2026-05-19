@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { visionPrompt, extractJsonArray, validateImage } from "@/lib/ai";
+import {
+  visionPrompt,
+  extractJsonArray,
+  validateImage,
+  TOOL_MODELS,
+} from "@/lib/ai";
 import { checkRateLimit, getClientIp } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
@@ -52,7 +57,10 @@ Rules:
 
 Return ONLY a JSON array of 5 strings. Example: ["caption 1", "caption 2", ...]`;
 
-    const text = await visionPrompt(file, prompt, 500);
+    const text = await visionPrompt(file, prompt, {
+      model: TOOL_MODELS.meme,
+      maxTokens: 500,
+    });
     const lines = extractJsonArray(text).slice(0, 5);
 
     const result = lines.map((line) => {

@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
-import { visionPrompt, extractJsonArray, validateImage } from "@/lib/ai";
+import {
+  visionPrompt,
+  extractJsonArray,
+  validateImage,
+  TOOL_MODELS,
+} from "@/lib/ai";
 import { checkRateLimit, getClientIp } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
@@ -77,7 +82,10 @@ ${emojiHint}
 Return ONLY a JSON array of 10 strings, nothing else. Example: ["caption 1", "caption 2", ...]
 Each caption on one line.`;
 
-    const text = await visionPrompt(file, prompt, 1200);
+    const text = await visionPrompt(file, prompt, {
+      model: TOOL_MODELS.caption,
+      maxTokens: 1200,
+    });
     const lines = extractJsonArray(text).slice(0, 10);
 
     const result = lines.map((line) => {

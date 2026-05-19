@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { visionPrompt, validateImage } from "@/lib/ai";
+import { visionPrompt, validateImage, TOOL_MODELS } from "@/lib/ai";
 import { checkRateLimit, getClientIp } from "@/lib/ratelimit";
 
 export const runtime = "nodejs";
@@ -28,7 +28,10 @@ export async function POST(req: Request) {
     const prompt = `Extract ALL text from this image. Output the text exactly as it appears, preserving line breaks and structure. Do not add any commentary, explanation, markdown formatting, or wrapping. Output only the raw extracted text. If there is no text in the image, output exactly: NO_TEXT_FOUND.
 ${language !== "auto-detect" ? `The text is in: ${language}.` : ""}`;
 
-    const text = await visionPrompt(file, prompt, 2500);
+    const text = await visionPrompt(file, prompt, {
+      model: TOOL_MODELS.ocr,
+      maxTokens: 2500,
+    });
 
     if (text === "NO_TEXT_FOUND" || !text) {
       return NextResponse.json({

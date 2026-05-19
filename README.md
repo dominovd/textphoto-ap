@@ -71,48 +71,73 @@ That's it — the category page and tool page rebuild automatically.
 
 ## AI integration
 
-All AI endpoints (`/api/caption`, `/api/ocr`, `/api/alt-text`, `/api/meme`) use **Claude Haiku 4.5** with vision — ~3x cheaper than Sonnet and quality is great for these tasks. Model is configurable in `lib/ai.ts`.
+All AI endpoints (`/api/caption`, `/api/ocr`, `/api/alt-text`, `/api/meme`) call **OpenRouter** (OpenAI-compatible API gateway), which routes to the best provider per tool. Defaults pick the cheapest model that doesn't compromise quality for each task.
 
-**Required env vars on Vercel:**
+### Per-tool model routing (defaults)
 
-| Var | Source | Why |
+| Endpoint | Default model | Why |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | https://console.anthropic.com | AI model access |
-| `UPSTASH_REDIS_REST_URL` | https://console.upstash.com | Rate limiting (see below) |
-| `UPSTASH_REDIS_REST_TOKEN` | Same Upstash page | Rate limiting |
-| `DAILY_AI_BUDGET_CALLS` | optional, default 1000 | Site-wide daily safety cap (~$5/day at Haiku pricing) |
+| `/api/caption` | `anthropic/claude-haiku-4.5` | Creative task — warm tone matters |
+| `/api/ocr` | `google/gemini-2.0-flash-001` | Factual task — Gemini equal/better at print text, much cheaper |
+| `/api/alt-text` | `google/gemini-2.0-flash-001` | Factual task — same as OCR |
+| `/api/meme` | `openai/gpt-4o-mini` | Comedy — better Western humour calibration |
 
-To set in Vercel:
-1. Project → Settings → Environment Variables.
-2. Add each var, scope: Production, Preview, Development.
-3. Redeploy (env vars aren't picked up until next deploy).
+Each can be overridden by setting `AI_MODEL_CAPTION`, `AI_MODEL_OCR`, `AI_MODEL_ALT_TEXT`, `AI_MODEL_MEME` in env vars — no redeploy needed for model swap (just restart).
+
+### Resilience — 3-tier fallback
+
+`visionPrompt()` runs three tiers in order, advancing only on error:
+
+| Tier | Provider | Model |
+|---|---|---|
+| 1 | OpenRouter | per-tool primary (e.g. Gemini Flash for OCR) |
+| 2 | OpenRouter | `AI_FALLBACK_MODEL` (default Gemini Flash) |
+| 3 | Anthropic SDK direct | `claude-haiku-4-5` (catastrophic fallback) |
+
+In practice almost all traffic resolves at Tier 1. Tier 3 is the safety net for the rare case where OpenRouter itself is unavailable. If Tier 3 also fails, the original error is re-thrown so the user gets a meaningful response.
+
+For Tier 3 to work, `ANTHROPIC_API_KEY` must still be set in env vars even after OpenRouter migration. Without it, Tier 3 throws and the original error propagates.
+
+### Required env vars on Vercel
+
+| Var | Source | Required | Why |
+|---|---|---|---|
+| `OPENROUTER_API_KEY` | https://openrouter.ai/keys | yes | Tier 1 + 2 of AI calls |
+| `ANTHROPIC_API_KEY` | https://console.anthropic.com | recommended | Tier 3 catastrophic fallback if OpenRouter is down |
+| `UPSTASH_REDIS_REST_URL` | https://console.upstash.com | yes | Rate limiting |
+| `UPSTASH_REDIS_REST_TOKEN` | Same Upstash page | yes | Rate limiting |
+| `FAL_KEY` | https://fal.ai/dashboard/keys | for image-to-image tools | Photo enhancement primary |
+| `REPLICATE_API_TOKEN` | https://replicate.com/account/api-tokens | for image-to-image fallback | Photo enhancement fallback |
+| `DAILY_AI_BUDGET_CALLS` | — | optional (default 1000) | Site-wide daily safety cap |
+| `AI_PRIMARY_MODEL` | — | optional | Override default primary for all tools |
+| `AI_FALLBACK_MODEL` | — | optional | Override default fallback |
+| `AI_MODEL_CAPTION` / `_OCR` / `_ALT_TEXT` / `_MEME` | — | optional | Per-tool model override |
 
 For local dev, create `.env.local`:
 
 ```
-ANTHROPIC_API_KEY=sk-ant-...
+OPENROUTER_API_KEY=sk-or-v1-...
 UPSTASH_REDIS_REST_URL=https://...upstash.io
 UPSTASH_REDIS_REST_TOKEN=...
 ```
 
-If Upstash env vars are missing, rate limiting **silently fails open** (allows all requests) and prints a warning in prod logs. In dev this is fine; in prod you'll want it set.
+### Pricing at default routing
 
-### Pricing model (current setup)
+Per 1000 calls (May 2026 prices, includes OpenRouter ~5% markup):
 
-At Haiku 4.5 pricing:
+| Tool | Old cost (Anthropic direct, Haiku) | New cost (per-tool routing) | Saving |
+|---|---|---|---|
+| Caption | $5 | $5 (same — Haiku) | 0% |
+| OCR | $7 | $1 (Gemini Flash) | **−86%** |
+| Alt-text | $3 | $0.30 (Gemini Flash) | **−90%** |
+| Meme | $4 | $1.20 (GPT-4o-mini) | **−70%** |
+| **Mixed average** | **$4.75** | **~$1.50** | **~3× cheaper** |
 
-| Tool | Cost per call |
-|---|---|
-| Caption (10 outputs) | ~$0.005 |
-| OCR | ~$0.007 |
-| Alt-text (3 variants) | ~$0.003 |
-| Meme (5 captions) | ~$0.004 |
+The global daily cap (`DAILY_AI_BUDGET_CALLS=1000`) is still a hard ceiling on call count regardless of model.
 
-The global daily cap (`DAILY_AI_BUDGET_CALLS=1000`) keeps maximum daily spend at ~$5.
+### Privacy caveat
 
-### Switching providers
-
-To swap to OpenAI: replace the SDK calls in `lib/ai.ts` and the 4 API routes — the prompts and parsing logic stay similar.
+Requests pass through OpenRouter's servers. They don't store request content by default but it's an extra trust hop vs Anthropic direct. The privacy page (`/privacy`) mentions this.
 
 ## Rate limiting
 
