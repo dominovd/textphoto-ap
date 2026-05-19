@@ -20,6 +20,7 @@ export default function TextEffectTool({ slug }: { slug: string }) {
     return {
       style: {
         ...preset.style,
+        display: "inline-block" as const,
         fontSize: `${size}px`,
         lineHeight: 1.1,
         fontWeight: config.fontWeight,
@@ -27,6 +28,7 @@ export default function TextEffectTool({ slug }: { slug: string }) {
         textTransform: config.textTransform,
         letterSpacing: config.letterSpacing,
         wordBreak: "break-word" as const,
+        padding: "0.1em 0.05em",
       },
     };
   }, [config, presetIdx, size]);
@@ -154,7 +156,12 @@ export default function TextEffectTool({ slug }: { slug: string }) {
           ref={previewRef}
           className={`${bg.className} min-h-[480px] flex items-center justify-center p-8`}
         >
-          <span style={preview.style} className="text-center">
+          {/* key forces full re-mount on preset change — avoids stale style state from previous preset */}
+          <span
+            key={`${slug}-${presetIdx}`}
+            style={preview.style}
+            className="text-center"
+          >
             {text || config.defaultText}
           </span>
         </div>
