@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { newShareId, saveShare } from "@/lib/share-store";
 import { getStyle } from "@/lib/text-effect-styles";
+import { addWatermark } from "@/lib/watermark";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
@@ -53,8 +54,6 @@ export async function POST(req: Request) {
         { status: 502 },
       );
     }
-    const contentType =
-      upstream.headers.get("content-type") || "image/png";
     const buf = await upstream.arrayBuffer();
     if (buf.byteLength > MAX_IMAGE_BYTES) {
       return NextResponse.json(
@@ -63,11 +62,21 @@ export async function POST(req: Request) {
       );
     }
 
+    // Add textphoto.app watermark — every shared image carries the brand back
+    let finalBuffer: Buffer;
+    try {
+      finalBuffer = await addWatermark(Buffer.from(buf));
+    } catch (e) {
+      // If watermark fails (rare — e.g. unsupported format), upload original
+      console.warn("watermark failed, uploading original:", e);
+      finalBuffer = Buffer.from(buf);
+    }
+
     // Upload to Vercel Blob with predictable path
     const id = newShareId();
-    const blob = await put(`share/${id}.png`, Buffer.from(buf), {
+    const blob = await put(`share/${id}.png`, finalBuffer, {
       access: "public",
-      contentType,
+      contentType: "image/png",
       addRandomSuffix: false,
     });
 
