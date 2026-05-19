@@ -329,7 +329,15 @@ async function falNanoBanana(
 }
 
 // Ideogram v3 uses a string enum for image_size, not aspect_ratio
-function aspectToIdeogramSize(ar: AspectRatio): string {
+type IdeogramImageSize =
+  | "square_hd"
+  | "square"
+  | "portrait_4_3"
+  | "portrait_16_9"
+  | "landscape_4_3"
+  | "landscape_16_9";
+
+function aspectToIdeogramSize(ar: AspectRatio): IdeogramImageSize {
   switch (ar) {
     case "16:9":
       return "landscape_16_9";
