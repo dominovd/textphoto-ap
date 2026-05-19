@@ -1,10 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { TEXT_EFFECT_STYLES, getStyle } from "@/lib/text-effect-styles";
 
-export default function AiTextEffectTool({
+// Outer wrapper — required so useSearchParams() (inside Inner) is wrapped
+// in a Suspense boundary for static prerendering.
+export default function AiTextEffectTool(props: { defaultStyleId?: string }) {
+  return (
+    <Suspense
+      fallback={
+        <div className="rounded-2xl border border-slate-200 p-12 text-center text-slate-400 text-sm">
+          Loading…
+        </div>
+      }
+    >
+      <AiTextEffectInner {...props} />
+    </Suspense>
+  );
+}
+
+function AiTextEffectInner({
   defaultStyleId,
 }: {
   defaultStyleId?: string;
