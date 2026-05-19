@@ -126,7 +126,7 @@ async function falUpscale(file: File, scale: 2 | 4): Promise<string> {
   ensureFal();
   const imageUrl = await fal.storage.upload(file);
   const result = await fal.subscribe("fal-ai/clarity-upscaler", {
-    input: { image_url: imageUrl, scale_factor: scale },
+    input: { image_url: imageUrl, upscale_factor: scale },
     logs: false,
   });
   const data = result.data as { image?: { url: string } } | undefined;
