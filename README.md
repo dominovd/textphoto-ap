@@ -144,9 +144,12 @@ Requests pass through OpenRouter's servers. They don't store request content by 
 We use **Upstash Redis** (free tier, 10k commands/day) for per-IP rate limiting.
 
 **Default limits (configurable in `lib/ratelimit.ts`):**
-- 5 requests per hour, per IP, per endpoint
-- 15 requests per day, per IP, per endpoint
+- 3 requests per hour, per IP, per endpoint (most specific)
+- 7 requests per hour, per IP, aggregated across ALL AI tools
+- 10 requests per day, per IP, aggregated across ALL AI tools
 - 1000 total AI requests per day, site-wide (= the global $5/day cap)
+
+Checks run in order: global → per-endpoint → IP-hourly → IP-daily. Most specific fails first when a user spams one tool, giving them a clear message to try another tool. After ~10 requests across all tools in a day, the user is capped until next day.
 
 When a limit is hit, the API returns 429 (per-IP) or 503 (global) with a `Retry-After` header and a human-friendly error message. Frontends display this directly to the user.
 
@@ -165,8 +168,9 @@ When a limit is hit, the API returns 429 (per-IP) or 503 (global) with a `Retry-
 Edit `lib/ratelimit.ts`:
 
 ```ts
-const HOURLY_PER_IP = 5;   // raise to 20 for friendlier UX
-const DAILY_PER_IP = 15;   // raise to 50
+const PER_ENDPOINT_HOURLY = 3;  // per tool per hour
+const PER_IP_HOURLY = 7;        // across all tools per hour
+const PER_IP_DAILY = 10;        // across all tools per day
 ```
 
 Or set the global daily cap via env var:
@@ -176,10 +180,11 @@ DAILY_AI_BUDGET_CALLS=2000
 
 ### Fallback behavior
 
-- **User hits hourly cap** → 429 with "Try again in X min" message
-- **User hits daily cap** → 429 with "Resets in Xh" message
-- **Site-wide budget exhausted** → 503 with "Resets at 00:00 UTC. Try our text-effect tools (no AI required)" message
-- **Anthropic API down** → 500 with error from SDK (visible to user, retry-friendly)
+- **User hits per-endpoint cap (3/h)** → 429 "Try a different tool or come back in X min"
+- **User hits IP hourly cap (7/h)** → 429 "Try again in X min"
+- **User hits IP daily cap (10/day)** → 429 "Resets in Xh"
+- **Site-wide budget exhausted** → 503 "Resets at 00:00 UTC. Try our text-effect tools (no AI required)"
+- **AI provider down** → automatic 3-tier fallback (OpenRouter primary → OpenRouter fallback → Anthropic direct)
 - **Upstash down or not configured** → fails open (allows all requests, logs a warning)
 - **Text-effect tools** (fire, neon, bubble, cursive, glitch, gold) — **never** hit AI, always work regardless of limits.
 
