@@ -496,6 +496,186 @@ export const tools: Tool[] = [
     ],
   },
 
+  // --- Use-case landing pages — same backend, pre-selected style, custom SEO ---
+  {
+    slug: "fire-text-generator",
+    category: "text-art",
+    name: "Fire Text Generator (AI)",
+    shortDescription:
+      "Generate realistic fire text — orange flames forming any word you type.",
+    longDescription:
+      "AI-generated fire text — real flame textures, embers, smoke, cinematic lighting. Type a word, get a high-resolution image with your text engulfed in fire. Choose between classic orange flames, blue plasma flame, inferno, or toxic green. Download as PNG, post anywhere — gaming logos, band art, posters, video thumbnails.",
+    icon: "🔥",
+    searchVolume: 1300,
+    component: "ai-text-effect",
+    faq: [
+      {
+        q: "Is this real fire, not just orange CSS?",
+        a: "Yes — AI generates a real image with photorealistic flame textures, glow, embers. Compare to our CSS Fire Text Generator (instant but flat).",
+      },
+      {
+        q: "Can I get blue flames?",
+        a: "Yes — pick the 'Blue Flame' or 'Toxic' variant from the style selector.",
+      },
+      {
+        q: "What sizes does it output?",
+        a: "Default is 16:9 landscape, perfect for video thumbnails and banners.",
+      },
+    ],
+  },
+  {
+    slug: "neon-sign-generator",
+    category: "text-art",
+    name: "Neon Sign Generator (AI)",
+    shortDescription:
+      "Turn any word into a glowing neon sign on a brick wall. AI-generated.",
+    longDescription:
+      "Generate a realistic glowing neon sign with your custom text — bent neon tubes, soft glow on the surface behind, retro diner aesthetic. Unlike CSS neon effects (flat color + shadow), this is a full scene: real-looking glass tubes against a textured wall.",
+    icon: "💡",
+    searchVolume: 4400,
+    component: "ai-text-effect",
+    faq: [
+      {
+        q: "How is this different from a CSS neon effect?",
+        a: "CSS gives you glowing text on a flat background. This is a full image: realistic neon tubes mounted on a brick wall, ambient glow, photographic quality. Better for shareable graphics.",
+      },
+      {
+        q: "Can I choose the color?",
+        a: "The default is pink/cyan retro style. For more color control, generate multiple times — prompt variations give different palettes.",
+      },
+      {
+        q: "What can I use it for?",
+        a: "Bar/cafe branding mockups, Instagram quotes, Twitch overlays, podcast cover art, business announcements.",
+      },
+    ],
+  },
+  {
+    slug: "3d-text-generator",
+    category: "text-art",
+    name: "3D Text Generator (AI)",
+    shortDescription:
+      "Premium 3D rendered text — gold, chrome, marble, bronze. AI-generated.",
+    longDescription:
+      "Generate luxurious 3D text in metallic gold, white gold, bronze, or rose gold finishes. Realistic depth, lighting, reflections — the kind of premium product render that would take an hour in Blender or Cinema 4D. Get one in 8 seconds.",
+    icon: "🏆",
+    searchVolume: 6600,
+    component: "ai-text-effect",
+    faq: [
+      {
+        q: "What finishes are available?",
+        a: "Classic gold, rose gold, white gold (silver), bronze — pick from style selector.",
+      },
+      {
+        q: "Can I use this for client work?",
+        a: "Yes — outputs are yours to use commercially. Great for product mockups, packaging concepts, premium brand identity.",
+      },
+      {
+        q: "What backgrounds work best?",
+        a: "Defaults to black marble for premium feel. You can edit the output in Photoshop or use Background Remover to swap.",
+      },
+    ],
+  },
+  {
+    slug: "youtube-thumbnail-text",
+    category: "text-art",
+    name: "YouTube Thumbnail Text Generator (AI)",
+    shortDescription:
+      "Bold high-CTR thumbnail text — yellow outline, red shadow, click-worthy.",
+    longDescription:
+      "Generate the kind of bold, eye-catching text overlay that YouTube creators pay designers for. Yellow outlined letters, dramatic red drop shadow, the click-bait aesthetic that pulls clicks. Type your hook word — get an image you can drop straight into your thumbnail composition.",
+    icon: "▶️",
+    searchVolume: 5400,
+    component: "ai-text-effect",
+    faq: [
+      {
+        q: "Will this guarantee me more views?",
+        a: "No — but text styling is a known CTR factor. Pair this with a strong face/object on the left side and a curiosity-driving title.",
+      },
+      {
+        q: "What size should I make the thumbnail?",
+        a: "YouTube thumbnails are 1280×720 (16:9). This tool outputs at 16:9 — drop the result into Canva, Photoshop, or Figma and add your other elements.",
+      },
+      {
+        q: "Should the text overlap with my face/subject?",
+        a: "Typically yes — overlapping text by 5-10% with the subject reads as 'composed' rather than 'stickered on'.",
+      },
+    ],
+  },
+  {
+    slug: "discord-banner-text",
+    category: "text-art",
+    name: "Discord Banner Text Generator (AI)",
+    shortDescription:
+      "Bold gaming banner text — fire, sparks, esports tournament aesthetic.",
+    longDescription:
+      "Generate banner-quality text for your Discord server, gaming community, or esports team. Dramatic lighting, sparks, explosive composition. Drop the output into your server banner, role icon, or announcement post.",
+    icon: "🎮",
+    searchVolume: 1600,
+    component: "ai-text-effect",
+    faq: [
+      {
+        q: "What aspect ratio for a Discord banner?",
+        a: "Discord server banners are 960×540 (16:9). This tool outputs 16:9 — fits perfectly.",
+      },
+      {
+        q: "Can I use it for Discord role/badge icons?",
+        a: "Yes — crop the central part of the output for square badge formats.",
+      },
+      {
+        q: "Will it work for non-gaming communities?",
+        a: "The 'gaming-banner' style leans esports. For a different vibe, try our other styles from the main AI Text Effect tool.",
+      },
+    ],
+  },
+  {
+    slug: "twitch-panel-text",
+    category: "text-art",
+    name: "Twitch Panel Text Generator (AI)",
+    shortDescription:
+      "Custom panel headers for your Twitch channel — purple gaming aesthetic.",
+    longDescription:
+      "Generate the panel header graphics for your Twitch profile — 'About', 'Schedule', 'Donate', whatever you need. Purple-and-black gaming aesthetic with glowing accents that matches Twitch's UI. Way better than typing plain text into a flat banner.",
+    icon: "🎮",
+    searchVolume: 880,
+    component: "ai-text-effect",
+    faq: [
+      {
+        q: "What size are Twitch panels?",
+        a: "Twitch panel images are 320×100. The tool outputs at higher resolution — crop to fit, you'll keep more detail than designing at 320×100 directly.",
+      },
+      {
+        q: "Can I generate multiple panels with consistent style?",
+        a: "Yes — use the same style for each panel header (About, Schedule, Socials, Donate, etc.) and they'll feel like a set.",
+      },
+    ],
+  },
+  {
+    slug: "logo-text-generator",
+    category: "text-art",
+    name: "Logo Text Generator (AI)",
+    shortDescription:
+      "Clean modern wordmark for your brand — minimalist typography, premium feel.",
+    longDescription:
+      "Generate a clean, minimalist logo wordmark for your brand or product. Modern sans-serif typography with lots of negative space, single accent color, premium feel. Great starting point for indie products, personal brands, side-project naming, packaging mockups.",
+    icon: "⚪",
+    searchVolume: 8100,
+    component: "ai-text-effect",
+    faq: [
+      {
+        q: "Will the output be vector / SVG?",
+        a: "No — outputs are PNG at high resolution. For vector (Illustrator/Figma), you'd need to trace the result manually or use a hire-a-designer step.",
+      },
+      {
+        q: "Is this enough for a final brand identity?",
+        a: "Honestly — for a real business you'll want a designer. But this is a great starting point for landing-page placeholders, side-project naming, or rapid iteration on logo direction.",
+      },
+      {
+        q: "Can I generate multiple variations?",
+        a: "Yes — same prompt usually gives different outputs each time. Try several to find your favourite direction.",
+      },
+    ],
+  },
+
   // === MEMES ===
   {
     slug: "ai-meme-generator",

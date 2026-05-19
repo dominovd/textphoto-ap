@@ -21,6 +21,7 @@ import ImageProcessTool, {
   CARTOON_CONFIG,
 } from "@/components/tools/ImageProcessTool";
 import AiTextEffectTool from "@/components/tools/AiTextEffectTool";
+import { TEXT_EFFECT_STYLES } from "@/lib/text-effect-styles";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -73,8 +74,12 @@ function renderTool(componentKey: string | null, slug: string) {
       return <ImageProcessTool config={CARTOON_CONFIG} />;
     case "instagram-bio":
       return <InstagramBioTool />;
-    case "ai-text-effect":
-      return <AiTextEffectTool />;
+    case "ai-text-effect": {
+      // Use-case landing pages: lookup style whose seoSlug matches the tool slug.
+      // Falls back to undefined for the generic /text-art/ai-text-effect page.
+      const presetStyle = TEXT_EFFECT_STYLES.find((s) => s.seoSlug === slug);
+      return <AiTextEffectTool defaultStyleId={presetStyle?.id} />;
+    }
     default:
       return (
         <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-white">

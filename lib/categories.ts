@@ -39,7 +39,7 @@ export const categories: Category[] = [
       "Type a word, get a cinematic image — neon signs, gold logos, fire banners",
     icon: "🎨",
     gradient: "from-fuchsia-500 to-amber-500",
-    count: 1,
+    count: 8,
   },
   {
     slug: "memes",
