@@ -15,6 +15,7 @@ export type Tool = {
     | "text-effect"
     | "alt-text"
     | "meme"
+    | "bg-remove"
     | null;
   faq: { q: string; a: string }[];
   featured?: boolean;
@@ -300,6 +301,43 @@ export const tools: Tool[] = [
       {
         q: "Can I bulk-process?",
         a: "Single images only on the free tier; bulk API coming soon.",
+      },
+    ],
+  },
+
+  // === PHOTO ENHANCEMENT (image-to-image via fal.ai + Replicate fallback) ===
+  {
+    slug: "background-remover",
+    category: "enhance",
+    name: "Background Remover",
+    shortDescription:
+      "Remove the background from any photo in 2 seconds. Free, no signup.",
+    longDescription:
+      "Drop a photo and get back a transparent PNG with the background removed — clean cut-out edges, even on hair and fur. Powered by an AI model that runs in seconds. Use it for product shots, profile pics, social media, design comps.",
+    icon: "✂️",
+    searchVolume: 49500,
+    component: "bg-remove",
+    featured: true,
+    faq: [
+      {
+        q: "Is it really free?",
+        a: "Yes — free with a daily limit. No sign up, no credit card.",
+      },
+      {
+        q: "What's the output quality?",
+        a: "Transparent PNG, same resolution as your input. Clean edges on most subjects including hair, fur, and complex shapes.",
+      },
+      {
+        q: "What file formats are supported?",
+        a: "JPG, PNG, WEBP. Max 10 MB.",
+      },
+      {
+        q: "Is my image stored?",
+        a: "No. Images are processed and deleted from our servers immediately.",
+      },
+      {
+        q: "Does it work on people, products, animals?",
+        a: "Yes — all of those. Best results when the subject is clearly visible against a contrasting background.",
       },
     ],
   },

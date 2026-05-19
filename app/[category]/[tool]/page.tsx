@@ -13,6 +13,7 @@ import OCRTool from "@/components/tools/OCRTool";
 import TextEffectTool from "@/components/tools/TextEffectTool";
 import AltTextTool from "@/components/tools/AltTextTool";
 import MemeTool from "@/components/tools/MemeTool";
+import BgRemoveTool from "@/components/tools/BgRemoveTool";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -52,6 +53,8 @@ function renderTool(componentKey: string | null, slug: string) {
       return <AltTextTool />;
     case "meme":
       return <MemeTool />;
+    case "bg-remove":
+      return <BgRemoveTool />;
     default:
       return (
         <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-white">

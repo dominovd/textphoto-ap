@@ -139,6 +139,38 @@ The global daily cap (`DAILY_AI_BUDGET_CALLS=1000`) is still a hard ceiling on c
 
 Requests pass through OpenRouter's servers. They don't store request content by default but it's an extra trust hop vs Anthropic direct. The privacy page (`/privacy`) mentions this.
 
+## Image-to-image tools (fal.ai + Replicate)
+
+Photo enhancement tools (background remove, upscale, colorize, etc.) use a separate pipeline from text/vision since the model class is different.
+
+| Provider | Role | Why |
+|---|---|---|
+| **fal.ai** | Primary | Cheapest per-call (~$0.001 for rembg), fast cold starts |
+| **Replicate** | Fallback | Wider catalog, longer track record, resilience |
+
+Code in `lib/fal.ts`. Each tool exposes a single function (e.g. `removeBackground(file)`) that tries fal first, falls back to Replicate on error.
+
+### Live image-to-image tools
+
+| URL | Function | Cost/call |
+|---|---|---|
+| `/enhance/background-remover` | Removes background → transparent PNG | ~$0.001 |
+
+### Required env vars
+
+| Var | Source | Required |
+|---|---|---|
+| `FAL_KEY` | https://fal.ai/dashboard/keys | yes for image tools |
+| `REPLICATE_API_TOKEN` | https://replicate.com/account/api-tokens | recommended (fallback) |
+
+### Rate limit
+
+Image-to-image endpoints share the same `lib/ratelimit.ts` budget as text/vision:
+- 3/h per endpoint per IP
+- 7/h per IP across all tools
+- 10/day per IP across all tools
+- 1000/day site-wide global cap
+
 ## Rate limiting
 
 We use **Upstash Redis** (free tier, 10k commands/day) for per-IP rate limiting.
