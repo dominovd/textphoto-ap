@@ -13,6 +13,15 @@ const PER_IP_DAILY = 10;
 const GLOBAL_DAILY_CAP =
   Number(process.env.DAILY_AI_BUDGET_CALLS) || 1000;
 
+// --- Image generation limits (separate budget, much pricier per call) --------
+// Image-gen endpoints (Nano Banana / Ideogram via fal.ai) cost ~$0.04 per call.
+// Tighter per-IP limits to spread the $3/day budget across more unique users.
+const IMAGEGEN_PER_IP_HOURLY = 1;
+const IMAGEGEN_PER_IP_DAILY = 3;
+// 75 calls ≈ $3/day at Nano Banana pricing.
+const IMAGEGEN_GLOBAL_DAILY =
+  Number(process.env.DAILY_IMAGEGEN_BUDGET_CALLS) || 75;
+
 // -----------------------------------------------------------------------------
 
 function getRedis(): Redis | null {
@@ -30,6 +39,9 @@ type Limiters = {
   ipHourly: Ratelimit;
   ipDaily: Ratelimit;
   global: Ratelimit;
+  imagegenIpHourly: Ratelimit;
+  imagegenIpDaily: Ratelimit;
+  imagegenGlobal: Ratelimit;
 };
 
 let cached: Limiters | null = null;
@@ -63,8 +75,96 @@ function getLimiters(): Limiters | null {
       prefix: "tp:g",
       analytics: true,
     }),
+    // Image-gen separate counters (different budget bucket)
+    imagegenIpHourly: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(IMAGEGEN_PER_IP_HOURLY, "1 h"),
+      prefix: "tp:igh",
+      analytics: true,
+    }),
+    imagegenIpDaily: new Ratelimit({
+      redis,
+      limiter: Ratelimit.slidingWindow(IMAGEGEN_PER_IP_DAILY, "24 h"),
+      prefix: "tp:igd",
+      analytics: true,
+    }),
+    imagegenGlobal: new Ratelimit({
+      redis,
+      limiter: Ratelimit.fixedWindow(IMAGEGEN_GLOBAL_DAILY, "24 h"),
+      prefix: "tp:igg",
+      analytics: true,
+    }),
   };
   return cached;
+}
+
+/**
+ * Separate rate-limit check for image-generation endpoints (Nano Banana etc.)
+ * Tighter per-IP limits + separate global budget bucket.
+ */
+export async function checkImageGenRateLimit(
+  ip: string,
+): Promise<RateLimitResult> {
+  const lim = getLimiters();
+  if (!lim) {
+    if (process.env.NODE_ENV === "production") {
+      console.warn(
+        "RATE LIMIT DISABLED: Upstash env vars missing. Set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN.",
+      );
+    }
+    return {
+      ok: true,
+      remaining: { perEndpointHourly: -1, ipHourly: -1, ipDaily: -1 },
+    };
+  }
+
+  // 1. Global image-gen budget ($3/day)
+  const g = await lim.imagegenGlobal.limit("imagegen");
+  if (!g.success) {
+    return {
+      ok: false,
+      status: 503,
+      reason: "global",
+      error:
+        "Today's free AI image generations are used up across the whole site. Resets at 00:00 UTC. Our other tools (captions, OCR, text effects) still work.",
+      retryAfter: Math.max(1, Math.ceil((g.reset - Date.now()) / 1000)),
+    };
+  }
+
+  // 2. Per-IP daily (3/day for image gen)
+  const d = await lim.imagegenIpDaily.limit(ip);
+  if (!d.success) {
+    const hours = Math.ceil((d.reset - Date.now()) / (60 * 60 * 1000));
+    return {
+      ok: false,
+      status: 429,
+      reason: "ip_daily",
+      error: `You've used your daily limit for image generation (${IMAGEGEN_PER_IP_DAILY} per day). Resets in ${hours}h. Try our other tools in the meantime.`,
+      retryAfter: Math.max(1, Math.ceil((d.reset - Date.now()) / 1000)),
+    };
+  }
+
+  // 3. Per-IP hourly (1/hour for image gen)
+  const h = await lim.imagegenIpHourly.limit(ip);
+  if (!h.success) {
+    const mins = Math.ceil((h.reset - Date.now()) / 60000);
+    return {
+      ok: false,
+      status: 429,
+      reason: "ip_hourly",
+      error: `Image generation is limited to ${IMAGEGEN_PER_IP_HOURLY} per hour to keep this tool free. Try again in ${mins} min.`,
+      retryAfter: Math.max(1, Math.ceil((h.reset - Date.now()) / 1000)),
+    };
+  }
+
+  return {
+    ok: true,
+    remaining: {
+      perEndpointHourly: h.remaining,
+      ipHourly: h.remaining,
+      ipDaily: d.remaining,
+    },
+  };
 }
 
 export type RateLimitResult =

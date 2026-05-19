@@ -20,6 +20,7 @@ export type Tool = {
     | "colorize"
     | "cartoon"
     | "instagram-bio"
+    | "ai-text-effect"
     | null;
   faq: { q: string; a: string }[];
   featured?: boolean;
@@ -458,6 +459,39 @@ export const tools: Tool[] = [
       {
         q: "How long does it take?",
         a: "Usually 20-40 seconds per photo.",
+      },
+    ],
+  },
+
+  // === TEXT ART (AI text-to-image — Nano Banana / Ideogram) ===
+  {
+    slug: "ai-text-effect",
+    category: "text-art",
+    name: "AI Text Effect Generator",
+    shortDescription:
+      "Type a word, pick a style — get a cinematic image. Fire, neon, gold, cyberpunk, and more.",
+    longDescription:
+      "Real AI image generation, not CSS tricks. The model renders your text as part of a full scene — realistic fire flames, glowing neon signs, premium gold logos, cyberpunk holograms. Download as PNG, share on socials. Built on Google's Nano Banana (Gemini 2.5 Flash Image), the best model for rendering specific text inside images.",
+    icon: "🎨",
+    searchVolume: 4400,
+    component: "ai-text-effect",
+    featured: true,
+    faq: [
+      {
+        q: "How is this different from your Fire / Neon / Gold CSS tools?",
+        a: "CSS tools apply styling to text in real-time, but the result looks flat and graphic. This one generates a real image — flames have depth, neon glows on a real wall, gold reflects on marble. Better for posters, banners, social shares.",
+      },
+      {
+        q: "Why are there usage limits?",
+        a: "AI image generation costs us ~$0.04 per image. To keep the tool free, we cap it at 1 per hour and 3 per day per user.",
+      },
+      {
+        q: "Can I commercially use the outputs?",
+        a: "Yes — outputs are yours to use anywhere.",
+      },
+      {
+        q: "What model is it?",
+        a: "Google Nano Banana (Gemini 2.5 Flash Image) as primary, Ideogram v3 as fallback.",
       },
     ],
   },

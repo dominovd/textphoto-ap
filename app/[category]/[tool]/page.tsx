@@ -20,6 +20,7 @@ import ImageProcessTool, {
   COLORIZE_CONFIG,
   CARTOON_CONFIG,
 } from "@/components/tools/ImageProcessTool";
+import AiTextEffectTool from "@/components/tools/AiTextEffectTool";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -72,6 +73,8 @@ function renderTool(componentKey: string | null, slug: string) {
       return <ImageProcessTool config={CARTOON_CONFIG} />;
     case "instagram-bio":
       return <InstagramBioTool />;
+    case "ai-text-effect":
+      return <AiTextEffectTool />;
     default:
       return (
         <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-white">

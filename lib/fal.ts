@@ -300,6 +300,79 @@ async function fileToDataUrl(file: File): Promise<string> {
 }
 
 // -----------------------------------------------------------------------------
+// AI text-to-image — Nano Banana primary (Google Gemini 2.5 Flash Image)
+// -----------------------------------------------------------------------------
+// Nano Banana is the best-in-class for rendering specific text inside images.
+// Fallback to Ideogram v3 (also strong text) on errors.
+
+type AspectRatio = "1:1" | "16:9" | "9:16" | "4:3" | "3:4";
+
+async function falNanoBanana(
+  prompt: string,
+  aspectRatio: AspectRatio,
+): Promise<string> {
+  ensureFal();
+  const result = await fal.subscribe("fal-ai/nano-banana", {
+    input: {
+      prompt,
+      aspect_ratio: aspectRatio,
+      num_images: 1,
+    },
+    logs: false,
+  });
+  const data = result.data as
+    | { images?: Array<{ url: string }>; image?: { url: string } }
+    | undefined;
+  const url = data?.images?.[0]?.url || data?.image?.url;
+  if (!url) throw new Error("Nano Banana returned no image");
+  return url;
+}
+
+async function falIdeogram(
+  prompt: string,
+  aspectRatio: AspectRatio,
+): Promise<string> {
+  ensureFal();
+  const result = await fal.subscribe("fal-ai/ideogram/v3", {
+    input: {
+      prompt,
+      aspect_ratio: aspectRatio,
+      rendering_speed: "BALANCED",
+    },
+    logs: false,
+  });
+  const data = result.data as
+    | { images?: Array<{ url: string }>; image?: { url: string } }
+    | undefined;
+  const url = data?.images?.[0]?.url || data?.image?.url;
+  if (!url) throw new Error("Ideogram returned no image");
+  return url;
+}
+
+export async function aiTextImage(
+  prompt: string,
+  aspectRatio: AspectRatio = "16:9",
+): Promise<{ resultUrl: string; provider: "nano-banana" | "ideogram" }> {
+  // Tier 1: Nano Banana (best text rendering, ~$0.039/img)
+  try {
+    const url = await falNanoBanana(prompt, aspectRatio);
+    return { resultUrl: url, provider: "nano-banana" };
+  } catch (err1) {
+    const msg1 = err1 instanceof Error ? err1.message : String(err1);
+    console.warn(`[fal] nano-banana failed: ${msg1}`);
+    // Tier 2: Ideogram v3
+    try {
+      console.log("[fal] tier2 retry → Ideogram v3");
+      const url = await falIdeogram(prompt, aspectRatio);
+      return { resultUrl: url, provider: "ideogram" };
+    } catch (err2) {
+      console.error("[fal] aiTextImage all tiers failed:", err2);
+      throw err1;
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Colorize black-and-white photos — Replicate only (arielreplicate/deoldify)
 // -----------------------------------------------------------------------------
 

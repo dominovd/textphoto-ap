@@ -26,11 +26,20 @@ export const categories: Category[] = [
   },
   {
     slug: "effects",
-    name: "Text effects on image",
-    description: "Fire, neon, bubble, graffiti, 3D, glitch",
+    name: "CSS text effects",
+    description: "Fire, neon, bubble, graffiti, 3D, glitch — instant, no AI",
     icon: "✨",
     gradient: "from-orange-500 to-red-500",
-    count: 16,
+    count: 6,
+  },
+  {
+    slug: "text-art",
+    name: "AI text art",
+    description:
+      "Type a word, get a cinematic image — neon signs, gold logos, fire banners",
+    icon: "🎨",
+    gradient: "from-fuchsia-500 to-amber-500",
+    count: 1,
   },
   {
     slug: "memes",
