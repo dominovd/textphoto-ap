@@ -119,6 +119,74 @@ async function replicateRemoveBackground(file: File): Promise<string> {
 }
 
 // -----------------------------------------------------------------------------
+// Upscale — fal.ai primary (clarity-upscaler) + Replicate fallback (real-esrgan)
+// -----------------------------------------------------------------------------
+
+async function falUpscale(file: File, scale: 2 | 4): Promise<string> {
+  ensureFal();
+  const imageUrl = await fal.storage.upload(file);
+  const result = await fal.subscribe("fal-ai/clarity-upscaler", {
+    input: { image_url: imageUrl, scale_factor: scale },
+    logs: false,
+  });
+  const data = result.data as { image?: { url: string } } | undefined;
+  if (!data?.image?.url) throw new Error("fal.ai returned no image URL");
+  return data.image.url;
+}
+
+async function replicateUpscale(file: File, scale: 2 | 4): Promise<string> {
+  if (!process.env.REPLICATE_API_TOKEN) {
+    throw new Error("REPLICATE_API_TOKEN env var is not set");
+  }
+  const buf = Buffer.from(await file.arrayBuffer());
+  const mediaType = file.type || "image/png";
+  const dataUrl = `data:${mediaType};base64,${buf.toString("base64")}`;
+
+  const create = await fetch(
+    "https://api.replicate.com/v1/models/nightmareai/real-esrgan/predictions",
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.REPLICATE_API_TOKEN}`,
+        "Content-Type": "application/json",
+        Prefer: "wait",
+      },
+      body: JSON.stringify({
+        input: { image: dataUrl, scale, face_enhance: false },
+      }),
+    },
+  );
+  if (!create.ok) {
+    throw new Error(`Replicate create failed: ${create.status} ${await create.text()}`);
+  }
+  let prediction = (await create.json()) as {
+    status: string;
+    output: string | string[] | null;
+    error?: string;
+    urls?: { get: string };
+  };
+  const deadline = Date.now() + 60_000;
+  while (
+    (prediction.status === "starting" || prediction.status === "processing") &&
+    Date.now() < deadline
+  ) {
+    await new Promise((r) => setTimeout(r, 1500));
+    if (!prediction.urls?.get) break;
+    const poll = await fetch(prediction.urls.get, {
+      headers: { Authorization: `Bearer ${process.env.REPLICATE_API_TOKEN}` },
+    });
+    prediction = await poll.json();
+  }
+  if (prediction.status !== "succeeded") {
+    throw new Error(`Replicate prediction failed: ${prediction.status} ${prediction.error || ""}`);
+  }
+  const output = prediction.output;
+  if (typeof output === "string") return output;
+  if (Array.isArray(output) && output[0]) return output[0];
+  throw new Error("Replicate returned no output URL");
+}
+
+// -----------------------------------------------------------------------------
 // Public API — 2-tier with automatic fallback
 // -----------------------------------------------------------------------------
 
@@ -133,7 +201,6 @@ export async function removeBackground(file: File): Promise<{
   } catch (err1) {
     const msg1 = err1 instanceof Error ? err1.message : String(err1);
     console.warn(`[fal] tier1 failed: ${msg1}`);
-
     // Tier 2: Replicate
     try {
       console.log("[fal] tier2 retry → Replicate");
@@ -142,6 +209,27 @@ export async function removeBackground(file: File): Promise<{
     } catch (err2) {
       const msg2 = err2 instanceof Error ? err2.message : String(err2);
       console.error(`[fal] all tiers failed. tier2 error: ${msg2}`);
+      throw err1;
+    }
+  }
+}
+
+export async function upscale(
+  file: File,
+  scale: 2 | 4 = 2,
+): Promise<{ resultUrl: string; provider: "fal" | "replicate" }> {
+  try {
+    const url = await falUpscale(file, scale);
+    return { resultUrl: url, provider: "fal" };
+  } catch (err1) {
+    const msg1 = err1 instanceof Error ? err1.message : String(err1);
+    console.warn(`[fal] upscale tier1 failed: ${msg1}`);
+    try {
+      console.log("[fal] upscale tier2 retry → Replicate");
+      const url = await replicateUpscale(file, scale);
+      return { resultUrl: url, provider: "replicate" };
+    } catch (err2) {
+      console.error(`[fal] upscale all tiers failed:`, err2);
       throw err1;
     }
   }

@@ -14,6 +14,7 @@ import TextEffectTool from "@/components/tools/TextEffectTool";
 import AltTextTool from "@/components/tools/AltTextTool";
 import MemeTool from "@/components/tools/MemeTool";
 import BgRemoveTool from "@/components/tools/BgRemoveTool";
+import UpscaleTool from "@/components/tools/UpscaleTool";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -46,7 +47,10 @@ function renderTool(componentKey: string | null, slug: string) {
     case "photo-caption":
       return <PhotoCaptionTool platform={getCaptionPlatform(slug)} />;
     case "ocr":
-      return <OCRTool />;
+      // Slug-based routing: OCRTool handles 3 modes via mode prop
+      if (slug === "handwriting-to-text") return <OCRTool mode="handwriting" />;
+      if (slug === "translate-from-photo") return <OCRTool mode="translate" />;
+      return <OCRTool mode="default" />;
     case "text-effect":
       return <TextEffectTool slug={slug} />;
     case "alt-text":
@@ -55,6 +59,8 @@ function renderTool(componentKey: string | null, slug: string) {
       return <MemeTool />;
     case "bg-remove":
       return <BgRemoveTool />;
+    case "upscale":
+      return <UpscaleTool />;
     default:
       return (
         <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-white">

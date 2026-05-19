@@ -16,6 +16,7 @@ export type Tool = {
     | "alt-text"
     | "meme"
     | "bg-remove"
+    | "upscale"
     | null;
   faq: { q: string; a: string }[];
   featured?: boolean;
@@ -143,14 +144,22 @@ export const tools: Tool[] = [
     name: "Handwriting to Text",
     shortDescription: "Turn handwritten notes into editable text.",
     longDescription:
-      "AI handwriting recognition. Upload a photo of handwritten notes or letters and get editable digital text.",
+      "AI handwriting recognition. Upload a photo of handwritten notes, letters, or signed forms and get editable digital text. Works on both print and cursive.",
     icon: "✍️",
     searchVolume: 4400,
-    component: null,
+    component: "ocr",
     faq: [
       {
         q: "How accurate is it?",
-        a: "85-95% for clear handwriting, lower for cursive or messy writing.",
+        a: "85-95% for clear handwriting, lower for cursive or messy writing. Genuinely illegible words are marked [unclear].",
+      },
+      {
+        q: "Does it work on cursive?",
+        a: "Yes, but expect lower accuracy than print. Best results with a clear, well-lit photo.",
+      },
+      {
+        q: "Is my image stored?",
+        a: "No. Images are processed and deleted from our servers immediately.",
       },
     ],
   },
@@ -158,13 +167,26 @@ export const tools: Tool[] = [
     slug: "translate-from-photo",
     category: "ocr",
     name: "Translate Text from Photo",
-    shortDescription: "Extract + translate text from any image.",
+    shortDescription: "Extract + translate text from any image, in one click.",
     longDescription:
-      "Two steps in one — OCR + translation. Useful for menus, signs, documents in a foreign language.",
+      "Two steps in one — OCR + translation. Useful for menus, signs, documents, screenshots in foreign languages. Pick your target language and get both the original detected text and the translation.",
     icon: "🌐",
     searchVolume: 9900,
-    component: null,
-    faq: [{ q: "How many languages?", a: "30+ for OCR, 100+ for translation." }],
+    component: "ocr",
+    faq: [
+      {
+        q: "How many languages are supported?",
+        a: "30+ source languages auto-detected. 14 target languages including English, Spanish, French, German, Russian, Chinese, Japanese, Arabic.",
+      },
+      {
+        q: "Does it work on handwriting?",
+        a: "Best with printed text. For handwriting, use our dedicated Handwriting to Text tool first.",
+      },
+      {
+        q: "Is my image stored?",
+        a: "No. Images are processed and deleted from our servers immediately.",
+      },
+    ],
   },
 
   // === EFFECTS (all using generic TextEffectTool via lib/effects.ts) ===
@@ -306,6 +328,37 @@ export const tools: Tool[] = [
   },
 
   // === PHOTO ENHANCEMENT (image-to-image via fal.ai + Replicate fallback) ===
+  {
+    slug: "photo-upscaler",
+    category: "enhance",
+    name: "Photo Upscaler",
+    shortDescription:
+      "Upscale your photo 2× or 4× without losing quality. AI sharpening.",
+    longDescription:
+      "Upload any photo and get back a sharper, higher-resolution version — 2× or 4× larger. Powered by AI super-resolution models that add realistic detail, not just bigger pixels. Great for small product shots, old photos, or screenshots you need to print.",
+    icon: "🔍",
+    searchVolume: 8100,
+    component: "upscale",
+    featured: true,
+    faq: [
+      {
+        q: "How big can the output be?",
+        a: "4× a 1024×1024 image gives you 4096×4096 — plenty for print or HD display.",
+      },
+      {
+        q: "Is 4× always better than 2×?",
+        a: "Not necessarily. 4× takes 3× longer and is overkill if you only need moderate sharpening. 2× is the sweet spot for most cases.",
+      },
+      {
+        q: "Does it work on faces?",
+        a: "Yes — the AI is good at preserving facial features. Best results with clear, well-lit input.",
+      },
+      {
+        q: "What's the max file size?",
+        a: "10 MB on upload. Output is PNG.",
+      },
+    ],
+  },
   {
     slug: "background-remover",
     category: "enhance",
