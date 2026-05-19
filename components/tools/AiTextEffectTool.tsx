@@ -37,6 +37,9 @@ function AiTextEffectInner({
   const [provider, setProvider] = useState<string>("");
   const [ms, setMs] = useState<number>(0);
   const [error, setError] = useState<string>("");
+  const [shareUrl, setShareUrl] = useState<string>("");
+  const [sharing, setSharing] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const style = getStyle(styleId) || TEXT_EFFECT_STYLES[0];
 
@@ -70,10 +73,95 @@ function AiTextEffectInner({
       setResultUrl(data.url);
       setProvider(data.provider);
       setMs(data.ms);
+      setShareUrl(""); // reset previous share
     } catch (e) {
       setError(e instanceof Error ? e.message : "Network error");
     } finally {
       setLoading(false);
+    }
+  }
+
+  /**
+   * Lazily upload to Vercel Blob and get a stable shareable URL.
+   * Called the first time the user clicks any share button.
+   */
+  async function ensureShared(): Promise<string | null> {
+    if (shareUrl) return shareUrl;
+    if (!resultUrl) return null;
+    setSharing(true);
+    try {
+      const res = await fetch("/api/share", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: resultUrl, text, styleId }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || "Share failed");
+        return null;
+      }
+      setShareUrl(data.shareUrl);
+      return data.shareUrl as string;
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Share failed");
+      return null;
+    } finally {
+      setSharing(false);
+    }
+  }
+
+  async function onCopyLink() {
+    const url = await ensureShared();
+    if (!url) return;
+    await navigator.clipboard.writeText(url);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  async function onShareTwitter() {
+    const url = await ensureShared();
+    if (!url) return;
+    const tweet = `Made this with @textphoto.app — type a word, get a cinematic AI text effect: ${url}`;
+    window.open(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweet)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  }
+
+  async function onShareReddit() {
+    const url = await ensureShared();
+    if (!url) return;
+    const title = `"${text}" in ${style.name} — AI text effect (free, no signup)`;
+    window.open(
+      `https://reddit.com/submit?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}`,
+      "_blank",
+      "noopener,noreferrer",
+    );
+  }
+
+  async function onNativeShare() {
+    const url = await ensureShared();
+    if (!url) return;
+    if (
+      typeof navigator !== "undefined" &&
+      "share" in navigator &&
+      typeof navigator.share === "function"
+    ) {
+      try {
+        await navigator.share({
+          title: `"${text}" in ${style.name} style`,
+          text: "Made this with textphoto.app",
+          url,
+        });
+      } catch {
+        // user cancelled — ignore
+      }
+    } else {
+      // Fallback: just copy link
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
   }
 
@@ -156,14 +244,6 @@ function AiTextEffectInner({
       <div className="bg-white rounded-2xl border border-slate-200 p-6 flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <h3 className="font-semibold">{style.name} result</h3>
-          {resultUrl && (
-            <button
-              onClick={onDownload}
-              className="text-xs px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white font-medium"
-            >
-              Download PNG
-            </button>
-          )}
         </div>
 
         {!resultUrl && !loading && (
@@ -189,8 +269,63 @@ function AiTextEffectInner({
                 className="max-h-[480px] max-w-full"
               />
             </div>
+
+            {/* Share row */}
+            <div className="mt-4 flex flex-wrap items-center gap-2">
+              <span className="text-xs text-slate-500 mr-1">Share:</span>
+              <button
+                onClick={onShareTwitter}
+                disabled={sharing}
+                className="px-3 py-1.5 rounded-lg border border-slate-200 hover:border-brand-300 text-sm text-slate-700 disabled:opacity-50"
+                title="Share to Twitter / X"
+              >
+                𝕏 Twitter
+              </button>
+              <button
+                onClick={onShareReddit}
+                disabled={sharing}
+                className="px-3 py-1.5 rounded-lg border border-slate-200 hover:border-brand-300 text-sm text-slate-700 disabled:opacity-50"
+                title="Share to Reddit"
+              >
+                🤖 Reddit
+              </button>
+              <button
+                onClick={onCopyLink}
+                disabled={sharing}
+                className="px-3 py-1.5 rounded-lg border border-slate-200 hover:border-brand-300 text-sm text-slate-700 disabled:opacity-50"
+              >
+                {copied ? "✓ Copied!" : sharing ? "Uploading…" : "🔗 Copy link"}
+              </button>
+              <button
+                onClick={onNativeShare}
+                disabled={sharing}
+                className="px-3 py-1.5 rounded-lg border border-slate-200 hover:border-brand-300 text-sm text-slate-700 disabled:opacity-50 sm:hidden"
+              >
+                Share
+              </button>
+              <button
+                onClick={onDownload}
+                className="ml-auto px-3 py-1.5 rounded-lg bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium"
+              >
+                Download PNG
+              </button>
+            </div>
+
             <p className="mt-3 text-xs text-slate-400 text-center">
               Generated by {provider} · {(ms / 1000).toFixed(1)}s
+              {shareUrl && (
+                <>
+                  {" · "}
+                  <a
+                    href={shareUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-brand-600 hover:underline"
+                  >
+                    view shareable page
+                  </a>
+                </>
+              )}
             </p>
           </>
         )}
