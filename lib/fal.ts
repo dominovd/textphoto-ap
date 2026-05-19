@@ -234,3 +234,99 @@ export async function upscale(
     }
   }
 }
+
+// -----------------------------------------------------------------------------
+// Generic Replicate prediction runner (for tools without fal.ai alternative)
+// -----------------------------------------------------------------------------
+
+async function runReplicate(
+  modelPath: string, // e.g. "arielreplicate/deoldify_image"
+  input: Record<string, unknown>,
+  timeoutMs = 60_000,
+): Promise<string> {
+  if (!process.env.REPLICATE_API_TOKEN) {
+    throw new Error("REPLICATE_API_TOKEN env var is not set");
+  }
+  const create = await fetch(
+    `https://api.replicate.com/v1/models/${modelPath}/predictions`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.REPLICATE_API_TOKEN}`,
+        "Content-Type": "application/json",
+        Prefer: "wait",
+      },
+      body: JSON.stringify({ input }),
+    },
+  );
+  if (!create.ok) {
+    throw new Error(
+      `Replicate create failed: ${create.status} ${await create.text()}`,
+    );
+  }
+  let prediction = (await create.json()) as {
+    status: string;
+    output: string | string[] | null;
+    error?: string;
+    urls?: { get: string };
+  };
+  const deadline = Date.now() + timeoutMs;
+  while (
+    (prediction.status === "starting" || prediction.status === "processing") &&
+    Date.now() < deadline
+  ) {
+    await new Promise((r) => setTimeout(r, 1500));
+    if (!prediction.urls?.get) break;
+    const poll = await fetch(prediction.urls.get, {
+      headers: { Authorization: `Bearer ${process.env.REPLICATE_API_TOKEN}` },
+    });
+    prediction = await poll.json();
+  }
+  if (prediction.status !== "succeeded") {
+    throw new Error(
+      `Replicate prediction failed: ${prediction.status} ${prediction.error || ""}`,
+    );
+  }
+  const output = prediction.output;
+  if (typeof output === "string") return output;
+  if (Array.isArray(output) && output[0]) return output[0];
+  throw new Error("Replicate returned no output URL");
+}
+
+async function fileToDataUrl(file: File): Promise<string> {
+  const buf = Buffer.from(await file.arrayBuffer());
+  const mediaType = file.type || "image/png";
+  return `data:${mediaType};base64,${buf.toString("base64")}`;
+}
+
+// -----------------------------------------------------------------------------
+// Colorize black-and-white photos — Replicate only (arielreplicate/deoldify)
+// -----------------------------------------------------------------------------
+
+export async function colorize(
+  file: File,
+): Promise<{ resultUrl: string; provider: "replicate" }> {
+  const dataUrl = await fileToDataUrl(file);
+  const url = await runReplicate(
+    "arielreplicate/deoldify_image",
+    { input_image: dataUrl, render_factor: 35 },
+    90_000,
+  );
+  return { resultUrl: url, provider: "replicate" };
+}
+
+// -----------------------------------------------------------------------------
+// Cartoonify photos — Replicate only (catacolabs/cartoonify)
+// -----------------------------------------------------------------------------
+
+export async function cartoonize(
+  file: File,
+): Promise<{ resultUrl: string; provider: "replicate" }> {
+  const dataUrl = await fileToDataUrl(file);
+  const url = await runReplicate(
+    "catacolabs/cartoonify",
+    { image: dataUrl },
+    90_000,
+  );
+  return { resultUrl: url, provider: "replicate" };
+}

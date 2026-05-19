@@ -28,6 +28,7 @@ export const TOOL_MODELS = {
   ocr: process.env.AI_MODEL_OCR || "google/gemini-2.0-flash-001",
   altText: process.env.AI_MODEL_ALT_TEXT || "google/gemini-2.0-flash-001",
   meme: process.env.AI_MODEL_MEME || "openai/gpt-4o-mini",
+  bio: process.env.AI_MODEL_BIO || "anthropic/claude-haiku-4.5",
 } as const;
 
 // Tier 3 catastrophic fallback — direct to Anthropic if OpenRouter is unreachable.
@@ -209,6 +210,74 @@ export async function visionPrompt(
       const msg3 = err3 instanceof Error ? err3.message : String(err3);
       console.error(`[ai] all tiers failed. tier3 error: ${msg3}`);
       // Re-throw the original (tier1) error since it's most representative
+      throw err1;
+    }
+  }
+}
+
+// =============================================================================
+// Text-only prompt (no image) — for Bio / pure-text tools
+// =============================================================================
+
+export type TextOptions = {
+  model?: string;
+  fallbackModel?: string;
+  maxTokens?: number;
+};
+
+/**
+ * Text-only prompt with 3-tier fallback (OpenRouter primary, OpenRouter
+ * fallback, Anthropic direct). Returns raw text response.
+ */
+export async function textPrompt(
+  prompt: string,
+  options: TextOptions = {},
+): Promise<string> {
+  const primary = options.model || DEFAULT_PRIMARY;
+  const fallback = options.fallbackModel || DEFAULT_FALLBACK;
+  const maxTokens = options.maxTokens ?? 1500;
+
+  const callOR = async (model: string): Promise<string> => {
+    const c = getOpenRouter();
+    const response = await c.chat.completions.create({
+      model,
+      max_tokens: maxTokens,
+      messages: [{ role: "user", content: prompt }],
+    });
+    return (response.choices[0]?.message?.content || "").trim();
+  };
+
+  try {
+    return await callOR(primary);
+  } catch (err1) {
+    const msg1 = err1 instanceof Error ? err1.message : String(err1);
+    console.warn(`[ai-text] tier1 (${primary}) failed: ${msg1}`);
+    if (primary !== fallback) {
+      try {
+        console.log(`[ai-text] tier2 retry → ${fallback}`);
+        return await callOR(fallback);
+      } catch (err2) {
+        const msg2 = err2 instanceof Error ? err2.message : String(err2);
+        console.warn(`[ai-text] tier2 (${fallback}) failed: ${msg2}`);
+      }
+    }
+    // Tier 3: Anthropic direct
+    try {
+      const a = getAnthropic();
+      if (!a) throw new Error("Anthropic fallback unavailable");
+      console.log("[ai-text] tier3 catastrophic fallback → Anthropic direct");
+      const response = await a.messages.create({
+        model: CATASTROPHIC_FALLBACK_MODEL,
+        max_tokens: maxTokens,
+        messages: [{ role: "user", content: prompt }],
+      });
+      return response.content
+        .filter((c) => c.type === "text")
+        .map((c) => (c as { type: "text"; text: string }).text)
+        .join("")
+        .trim();
+    } catch (err3) {
+      console.error("[ai-text] all tiers failed:", err3);
       throw err1;
     }
   }

@@ -17,6 +17,9 @@ export type Tool = {
     | "meme"
     | "bg-remove"
     | "upscale"
+    | "colorize"
+    | "cartoon"
+    | "instagram-bio"
     | null;
   faq: { q: string; a: string }[];
   featured?: boolean;
@@ -97,13 +100,27 @@ export const tools: Tool[] = [
     slug: "instagram-bio-generator",
     category: "captions",
     name: "Instagram Bio Generator",
-    shortDescription: "Bio ideas in 3 styles: aesthetic, funny, pro.",
+    shortDescription:
+      "10 bio ideas in 6 styles — fits the 150-char limit. Free, no signup.",
     longDescription:
-      "Generate Instagram bio ideas fitting your niche. Add your keywords, pick a vibe, get 10 bios fitting the 150-char limit.",
+      "Tell us your niche (e.g. fitness coach, food blogger, indie dev), pick a vibe, optionally add keywords — get 10 bios crafted to fit Instagram's 150-character limit. Vary tones from aesthetic to edgy, with or without emojis.",
     icon: "👤",
     searchVolume: 5400,
-    component: null,
-    faq: [{ q: "Does it include emojis?", a: "Yes, optional." }],
+    component: "instagram-bio",
+    faq: [
+      {
+        q: "How long is an Instagram bio?",
+        a: "150 characters max. Our generator never exceeds that — character count shown next to each bio.",
+      },
+      {
+        q: "Does it include emojis?",
+        a: "Yes, you can toggle on or off. Emojis usually help engagement.",
+      },
+      {
+        q: "Can I use these commercially?",
+        a: "Yes — bios are yours to use anywhere.",
+      },
+    ],
   },
 
   // === OCR ===
@@ -391,6 +408,56 @@ export const tools: Tool[] = [
       {
         q: "Does it work on people, products, animals?",
         a: "Yes — all of those. Best results when the subject is clearly visible against a contrasting background.",
+      },
+    ],
+  },
+
+  // === ENHANCE — Colorize + Cartoon (Replicate-only) ===
+  {
+    slug: "photo-colorizer",
+    category: "enhance",
+    name: "Photo Colorizer",
+    shortDescription:
+      "Colorize black-and-white photos with AI. Free, no signup.",
+    longDescription:
+      "Upload a black-and-white or faded colour photo and get back a realistic colorized version. Powered by DeOldify — the open-source model behind many commercial colourizers. Takes 30-60 seconds per photo.",
+    icon: "🎨",
+    searchVolume: 6600,
+    component: "colorize",
+    faq: [
+      {
+        q: "What kinds of photos work best?",
+        a: "Classic B&W portraits, landscapes, family photos. Old colour photos can also benefit from a refresh.",
+      },
+      {
+        q: "How long does it take?",
+        a: "Usually 30-60 seconds per photo.",
+      },
+      {
+        q: "Is the result historically accurate?",
+        a: "AI infers plausible colours — it doesn't know the real colours of objects in the original scene. Results are realistic but not guaranteed accurate.",
+      },
+    ],
+  },
+  {
+    slug: "photo-to-cartoon",
+    category: "enhance",
+    name: "Photo to Cartoon",
+    shortDescription:
+      "Turn any photo into a cartoon-style illustration. Free, no signup.",
+    longDescription:
+      "Upload a photo and get back a cartoonified version — clean lines, simplified shapes, illustration style. Works on faces, pets, products, scenes.",
+    icon: "🎭",
+    searchVolume: 8100,
+    component: "cartoon",
+    faq: [
+      {
+        q: "What works best?",
+        a: "Clear, well-lit subjects. Faces with good lighting come out great. Busy backgrounds can be tricky.",
+      },
+      {
+        q: "How long does it take?",
+        a: "Usually 20-40 seconds per photo.",
       },
     ],
   },

@@ -15,6 +15,11 @@ import AltTextTool from "@/components/tools/AltTextTool";
 import MemeTool from "@/components/tools/MemeTool";
 import BgRemoveTool from "@/components/tools/BgRemoveTool";
 import UpscaleTool from "@/components/tools/UpscaleTool";
+import InstagramBioTool from "@/components/tools/InstagramBioTool";
+import ImageProcessTool, {
+  COLORIZE_CONFIG,
+  CARTOON_CONFIG,
+} from "@/components/tools/ImageProcessTool";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -61,6 +66,12 @@ function renderTool(componentKey: string | null, slug: string) {
       return <BgRemoveTool />;
     case "upscale":
       return <UpscaleTool />;
+    case "colorize":
+      return <ImageProcessTool config={COLORIZE_CONFIG} />;
+    case "cartoon":
+      return <ImageProcessTool config={CARTOON_CONFIG} />;
+    case "instagram-bio":
+      return <InstagramBioTool />;
     default:
       return (
         <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-white">
