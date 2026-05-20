@@ -4,6 +4,7 @@ import { categories } from "@/lib/categories";
 import { getFeaturedTools, tools } from "@/lib/tools";
 import CategoryCard from "@/components/CategoryCard";
 import FeaturedToolCard from "@/components/FeaturedToolCard";
+import ShowcaseCarousel from "@/components/ShowcaseCarousel";
 
 export const metadata: Metadata = {
   alternates: { canonical: "https://textphoto.app/" },
@@ -134,6 +135,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Showcase carousel — pre-generated AI text effects, click to remix */}
+      <ShowcaseCarousel />
 
       {/* Categories */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
