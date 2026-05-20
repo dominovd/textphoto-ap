@@ -19,6 +19,30 @@ export type TextEffectStyle = {
   seoVolume?: number;
 };
 
+// Pre-generated showcase URL for each style. Lives in Vercel Blob,
+// served via /api/showcase-upload during seeding. Used as preview in
+// the style-picker UI so users see what each style looks like before generating.
+const BLOB_BASE = "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com";
+
+export function getStylePreviewUrl(styleId: string): string | null {
+  // All seeded styles except twitch-panel (which can be seeded later).
+  const seeded = new Set([
+    "realistic-fire",
+    "blue-flame",
+    "heavy-metal",
+    "neon-sign",
+    "3d-gold",
+    "cyberpunk",
+    "gaming-banner",
+    "horror-cursed",
+    "holographic",
+    "stone-carving",
+    "youtube-thumbnail",
+    "minimalist-logo",
+  ]);
+  return seeded.has(styleId) ? `${BLOB_BASE}/showcase/${styleId}.webp` : null;
+}
+
 export const TEXT_EFFECT_STYLES: TextEffectStyle[] = [
   {
     id: "realistic-fire",

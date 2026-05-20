@@ -2,7 +2,11 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { TEXT_EFFECT_STYLES, getStyle } from "@/lib/text-effect-styles";
+import {
+  TEXT_EFFECT_STYLES,
+  getStyle,
+  getStylePreviewUrl,
+} from "@/lib/text-effect-styles";
 
 // Outer wrapper — required so useSearchParams() (inside Inner) is wrapped
 // in a Suspense boundary for static prerendering.
@@ -200,26 +204,48 @@ function AiTextEffectInner({
         </p>
 
         <label className="text-sm font-semibold mb-3 block">2. Style</label>
-        <div className="grid grid-cols-2 gap-2 max-h-[320px] overflow-y-auto pr-1">
-          {TEXT_EFFECT_STYLES.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => setStyleId(s.id)}
-              className={`p-3 rounded-lg border text-left ${
-                styleId === s.id
-                  ? "border-brand-500 bg-brand-50"
-                  : "border-slate-200 bg-white hover:border-slate-300"
-              }`}
-            >
-              <div className="text-xl mb-1">{s.emoji}</div>
-              <div className="text-xs font-semibold text-slate-900">
-                {s.name}
-              </div>
-              <div className="text-xs text-slate-500 line-clamp-1">
-                {s.description}
-              </div>
-            </button>
-          ))}
+        <div className="grid grid-cols-2 gap-2 max-h-[440px] overflow-y-auto pr-1">
+          {TEXT_EFFECT_STYLES.map((s) => {
+            const previewUrl = getStylePreviewUrl(s.id);
+            const isActive = styleId === s.id;
+            return (
+              <button
+                key={s.id}
+                onClick={() => setStyleId(s.id)}
+                className={`rounded-lg border text-left overflow-hidden transition ${
+                  isActive
+                    ? "border-brand-500 ring-2 ring-brand-200"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+              >
+                {/* Preview thumbnail */}
+                <div className="aspect-[16/9] bg-slate-100 relative overflow-hidden">
+                  {previewUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={previewUrl}
+                      alt={`Example: ${s.name}`}
+                      loading="lazy"
+                      className="object-cover w-full h-full"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-3xl">
+                      {s.emoji}
+                    </div>
+                  )}
+                </div>
+                <div className={`p-2 ${isActive ? "bg-brand-50" : ""}`}>
+                  <div className="text-xs font-semibold text-slate-900 flex items-center gap-1">
+                    <span className="text-base leading-none">{s.emoji}</span>
+                    <span className="truncate">{s.name}</span>
+                  </div>
+                  <div className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">
+                    {s.description}
+                  </div>
+                </div>
+              </button>
+            );
+          })}
         </div>
 
         {error && (
