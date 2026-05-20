@@ -20,11 +20,10 @@ type ShowcaseItem = {
   label: string; // human-readable style name
 };
 
-// Blob domain — set via env so we don't hardcode account-specific subdomain.
-// Falls back to a placeholder that won't 200 — keeps build green pre-seeding.
+// Account-specific Blob domain. Files seeded May 2026 via /api/showcase-upload.
+// To re-seed: bump image-gen limits, run the in-browser script, re-upload.
 const BLOB_BASE =
-  process.env.NEXT_PUBLIC_BLOB_BASE ||
-  "https://placeholder.public.blob.vercel-storage.com";
+  "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com";
 
 const ITEMS: ShowcaseItem[] = [
   { styleId: "realistic-fire", text: "BLAZE", label: "Realistic Fire" },

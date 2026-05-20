@@ -16,14 +16,11 @@ const GLOBAL_DAILY_CAP =
 // --- Image generation limits (separate budget, much pricier per call) --------
 // Image-gen endpoints (Nano Banana / Ideogram via fal.ai) cost ~$0.04 per call.
 // Tighter per-IP limits to spread the $3/day budget across more unique users.
-//
-// TEMPORARY (May 2026): hourly+daily bumped to 15 to generate the showcase
-// carousel for the homepage. Revert to 1/3 after the batch is complete.
-const IMAGEGEN_PER_IP_HOURLY = 15;
-const IMAGEGEN_PER_IP_DAILY = 15;
-// 200 calls ≈ $8/day at Nano Banana pricing (temporarily up from 75 for batch).
+const IMAGEGEN_PER_IP_HOURLY = 1;
+const IMAGEGEN_PER_IP_DAILY = 3;
+// 75 calls ≈ $3/day at Nano Banana pricing.
 const IMAGEGEN_GLOBAL_DAILY =
-  Number(process.env.DAILY_IMAGEGEN_BUDGET_CALLS) || 200;
+  Number(process.env.DAILY_IMAGEGEN_BUDGET_CALLS) || 75;
 
 // -----------------------------------------------------------------------------
 
