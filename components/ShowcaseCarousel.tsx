@@ -20,6 +20,12 @@ type ShowcaseItem = {
   label: string; // human-readable style name
 };
 
+// Blob domain — set via env so we don't hardcode account-specific subdomain.
+// Falls back to a placeholder that won't 200 — keeps build green pre-seeding.
+const BLOB_BASE =
+  process.env.NEXT_PUBLIC_BLOB_BASE ||
+  "https://placeholder.public.blob.vercel-storage.com";
+
 const ITEMS: ShowcaseItem[] = [
   { styleId: "realistic-fire", text: "BLAZE", label: "Realistic Fire" },
   { styleId: "blue-flame", text: "IGNITE", label: "Blue Flame" },
@@ -82,7 +88,7 @@ export default function ShowcaseCarousel() {
               >
                 <div className="aspect-[16/9] relative bg-slate-100 overflow-hidden">
                   <Image
-                    src={`/showcase/${item.styleId}.webp`}
+                    src={`${BLOB_BASE}/showcase/${item.styleId}.webp`}
                     alt={`"${item.text}" in ${item.label} style`}
                     width={600}
                     height={340}
