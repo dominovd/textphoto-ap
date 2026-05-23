@@ -21,6 +21,7 @@ export type Tool = {
     | "cartoon"
     | "instagram-bio"
     | "ai-text-effect"
+    | "pet-portrait"
     | null;
   faq: { q: string; a: string }[];
   featured?: boolean;
@@ -672,6 +673,142 @@ export const tools: Tool[] = [
       {
         q: "Can I generate multiple variations?",
         a: "Yes — same prompt usually gives different outputs each time. Try several to find your favourite direction.",
+      },
+    ],
+  },
+
+  // === PET PORTRAITS (image-to-image via Nano Banana edit) ===
+  {
+    slug: "ai-pet-portrait-generator",
+    category: "pet",
+    name: "AI Pet Portrait Generator",
+    shortDescription:
+      "Turn your pet into a knight, astronaut, chef — 12 styles, free, no signup.",
+    longDescription:
+      "Upload one clear photo of your pet and pick a style — knight in shining armor, astronaut floating in space, mafia boss in a pinstripe suit, chef in a kitchen, Renaissance oil painting. The AI keeps your pet's actual face, breed, and fur color and composes the costume and scene around it. Download as PNG and share. Powered by Google's Nano Banana (Gemini 2.5 Flash Image), the best model for preserving subject identity while editing.",
+    icon: "🐾",
+    searchVolume: 1300,
+    component: "pet-portrait",
+    featured: true,
+    faq: [
+      {
+        q: "Will it actually look like my pet?",
+        a: "Yes — Nano Banana preserves the pet's face, breed, fur color, and identifying features. Best results with a clear, well-lit, eye-level photo where the pet's face is fully visible.",
+      },
+      {
+        q: "Is this completely free?",
+        a: "Yes. No sign up, no credit card. Limited to 1 portrait per hour and 3 per day to keep the tool free for everyone.",
+      },
+      {
+        q: "Why are there usage limits?",
+        a: "AI image generation costs us ~$0.04 per image. The daily limit lets us spread our $3/day image-gen budget across more people.",
+      },
+      {
+        q: "Can I add my own custom details to the prompt?",
+        a: "Yes — there's an optional 'custom details' field where you can add things like 'wearing red sunglasses' or 'on a beach'. Keep it short (under 200 chars) and concrete.",
+      },
+      {
+        q: "What kinds of pets work?",
+        a: "Dogs, cats, rabbits, hamsters, parrots, ferrets, lizards — anything with a clear face. Multi-pet group photos are trickier; one pet per photo gives the best results.",
+      },
+      {
+        q: "Is my photo stored?",
+        a: "Your uploaded photo is processed and deleted from our servers shortly after generation. The generated image is hosted on a CDN for a few hours so you can download it.",
+      },
+      {
+        q: "Can I use the result commercially?",
+        a: "Yes — outputs are yours to use anywhere: prints, mugs, holiday cards, social media, anywhere.",
+      },
+    ],
+  },
+
+  // --- Use-case landing pages — same backend, pre-selected style, custom SEO ---
+  {
+    slug: "renaissance-pet-portrait",
+    category: "pet",
+    name: "Renaissance Pet Portrait Generator (AI)",
+    shortDescription:
+      "Turn your pet into a 17th-century oil painting — royal velvet, chiaroscuro lighting.",
+    longDescription:
+      "Upload one photo of your pet and get back a richly painted Renaissance-style portrait — your pet in a velvet doublet with lace ruff collar, painted in the style of Rembrandt or Van Dyck, dark moody chiaroscuro lighting, visible oil brushstrokes. The AI preserves your pet's breed, fur color, and face. The trending viral pet portrait style, made free.",
+    icon: "🎨",
+    searchVolume: 1900,
+    component: "pet-portrait",
+    featured: true,
+    faq: [
+      {
+        q: "Will it look like my pet?",
+        a: "Yes — the model preserves your pet's breed, fur color, and face. Only the costume and scene change.",
+      },
+      {
+        q: "Can I print this on a canvas?",
+        a: "Yes — outputs are high-resolution PNG (around 1024×1024) and look great printed on canvas, framed, or used as a holiday card.",
+      },
+      {
+        q: "How is this different from paid services like Crown & Paw?",
+        a: "Paid services hire a designer to manually composite your pet into a template. This is fully AI — no human in the loop, free, and you can re-generate as many times as you like.",
+      },
+    ],
+  },
+  {
+    slug: "cat-mafia-portrait",
+    category: "pet",
+    name: "Cat Mafia Portrait (AI)",
+    shortDescription:
+      "Your cat as a 1920s mafia boss — pinstripe suit, fedora, cigar.",
+    longDescription:
+      "Upload one photo of your cat (or any pet) and get a 1920s mafia boss portrait — pinstripe suit, fedora hat, cigar, the works. Photorealistic and shareable. The AI keeps your cat's face and fur color and dresses it up. The classic pet-as-gangster meme, done in seconds.",
+    icon: "🎩",
+    searchVolume: 480,
+    component: "pet-portrait",
+    faq: [
+      {
+        q: "Does it work on dogs too?",
+        a: "Yes — works for any pet. The style is the same.",
+      },
+      {
+        q: "Can I add my own details (e.g. specific weapon, different hat)?",
+        a: "Yes — there's a 'custom details' field where you can add things like 'wearing red sunglasses' or 'holding a violin case'.",
+      },
+    ],
+  },
+  {
+    slug: "dog-astronaut-portrait",
+    category: "pet",
+    name: "Dog Astronaut Portrait (AI)",
+    shortDescription:
+      "Your dog as a NASA astronaut — spacesuit, helmet, Earth in the background.",
+    longDescription:
+      "Upload a photo of your dog and get an astronaut portrait — white NASA spacesuit, helmet with the visor up showing your dog's face, Earth floating behind. The AI preserves your dog's breed, color, and face. Great for kids' rooms, holiday cards, social media.",
+    icon: "🚀",
+    searchVolume: 320,
+    component: "pet-portrait",
+    faq: [
+      {
+        q: "Does it work on cats and other pets?",
+        a: "Yes — the same generator works for any pet. The style was designed for dogs but looks great with cats and rabbits too.",
+      },
+      {
+        q: "Can I get a different background (e.g. moon surface)?",
+        a: "Yes — use the 'custom details' field to add things like 'standing on the moon surface' or 'inside a space station'.",
+      },
+    ],
+  },
+  {
+    slug: "ai-pet-gym-portrait",
+    category: "pet",
+    name: "Pet Gym Athlete Portrait (AI)",
+    shortDescription:
+      "Your pet lifting dumbbells, wearing headphones — viral gym pet meme.",
+    longDescription:
+      "Upload your pet's photo and turn them into a buff gym athlete — black tank top, dumbbells in their paws, red over-ear headphones, modern gym in the background. The viral 'pet at the gym' aesthetic that flooded TikTok and Reddit. AI keeps your pet's face and breed.",
+    icon: "💪",
+    searchVolume: 210,
+    component: "pet-portrait",
+    faq: [
+      {
+        q: "Can I get a different gym scene (e.g. boxing, CrossFit)?",
+        a: "Yes — use the 'custom details' field to add things like 'in a boxing ring' or 'doing a deadlift'.",
       },
     ],
   },

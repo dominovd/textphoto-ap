@@ -50,6 +50,15 @@ export const categories: Category[] = [
     count: 6,
   },
   {
+    slug: "pet",
+    name: "AI pet portraits",
+    description:
+      "Turn your pet into a knight, astronaut, chef, mafia boss — upload a photo",
+    icon: "🐾",
+    gradient: "from-amber-500 to-orange-600",
+    count: 5,
+  },
+  {
     slug: "alt-text",
     name: "Alt-text & SEO",
     description: "AI alt text, image description, SEO filenames",

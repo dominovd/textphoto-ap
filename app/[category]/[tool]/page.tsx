@@ -22,6 +22,8 @@ import ImageProcessTool, {
 } from "@/components/tools/ImageProcessTool";
 import AiTextEffectTool from "@/components/tools/AiTextEffectTool";
 import { TEXT_EFFECT_STYLES } from "@/lib/text-effect-styles";
+import PetPortraitTool from "@/components/tools/PetPortraitTool";
+import { PET_PORTRAIT_STYLES } from "@/lib/pet-portrait-styles";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -79,6 +81,11 @@ function renderTool(componentKey: string | null, slug: string) {
       // Falls back to undefined for the generic /text-art/ai-text-effect page.
       const presetStyle = TEXT_EFFECT_STYLES.find((s) => s.seoSlug === slug);
       return <AiTextEffectTool defaultStyleId={presetStyle?.id} />;
+    }
+    case "pet-portrait": {
+      // Use-case landing pages: lookup pet style whose seoSlug matches the tool slug.
+      const presetStyle = PET_PORTRAIT_STYLES.find((s) => s.seoSlug === slug);
+      return <PetPortraitTool defaultStyleId={presetStyle?.id} />;
     }
     default:
       return (

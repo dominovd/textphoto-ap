@@ -398,6 +398,54 @@ export async function aiTextImage(
 }
 
 // -----------------------------------------------------------------------------
+// AI Pet Portrait — image-to-image via Nano Banana Edit
+// -----------------------------------------------------------------------------
+// Nano Banana (Gemini 2.5 Flash Image) supports image editing with reference
+// images via the /edit endpoint. The pet's identity (breed, color, face) is
+// preserved while the costume/scene from the prompt is composed around it.
+//
+// Endpoint: fal-ai/nano-banana/edit
+// Input: { prompt, image_urls: string[], num_images?: 1 }
+// Output: { images: [{ url }] }
+
+async function falNanoBananaEdit(
+  prompt: string,
+  imageUrl: string,
+): Promise<string> {
+  ensureFal();
+  const result = await fal.subscribe("fal-ai/nano-banana/edit", {
+    input: {
+      prompt,
+      image_urls: [imageUrl],
+      num_images: 1,
+    },
+    logs: false,
+  });
+  const data = result.data as
+    | { images?: Array<{ url: string }>; image?: { url: string } }
+    | undefined;
+  const url = data?.images?.[0]?.url || data?.image?.url;
+  if (!url) throw new Error("Nano Banana Edit returned no image");
+  return url;
+}
+
+/**
+ * Image-to-image: take a user pet photo + prompt, return transformed image URL.
+ * Uses Nano Banana Edit (best for preserving subject identity while composing
+ * costumes/scenes around it).
+ */
+export async function petPortrait(
+  file: File,
+  prompt: string,
+): Promise<{ resultUrl: string; provider: "nano-banana-edit" }> {
+  ensureFal();
+  // Upload the user's pet photo to fal.storage (temporary CDN)
+  const imageUrl = await fal.storage.upload(file);
+  const resultUrl = await falNanoBananaEdit(prompt, imageUrl);
+  return { resultUrl, provider: "nano-banana-edit" };
+}
+
+// -----------------------------------------------------------------------------
 // Colorize black-and-white photos — Replicate only (arielreplicate/deoldify)
 // -----------------------------------------------------------------------------
 
