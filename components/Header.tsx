@@ -37,10 +37,11 @@ export default function Header() {
         <div className="ml-auto flex items-center gap-3">
           <Link
             href="/search"
-            className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-sm text-slate-500 w-64"
+            aria-label="Search tools"
+            className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 bg-white hover:border-brand-300 hover:bg-slate-50 text-sm text-slate-600 transition"
           >
             <svg
-              className="w-4 h-4"
+              className="w-4 h-4 text-slate-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -53,7 +54,7 @@ export default function Header() {
                 d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"
               />
             </svg>
-            <span>Search tools…</span>
+            <span className="font-medium">Search</span>
           </Link>
           <Link
             href="/captions/instagram-caption-generator"
