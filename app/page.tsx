@@ -143,6 +143,23 @@ export default function Home() {
       {/* Pet portrait showcase — upload a pet, pick a style */}
       <PetShowcaseCarousel />
 
+      {/* Featured tools — moved above categories per request, most engaging block on the homepage */}
+      <section className="bg-white border-b border-slate-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+            Most popular tools
+          </h2>
+          <p className="text-slate-500 text-sm mb-8">
+            Hand-picked by what&apos;s blowing up this month
+          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featured.map((t) => (
+              <FeaturedToolCard key={t.slug} tool={t} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Categories */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
         <div className="flex items-end justify-between mb-8">
@@ -160,53 +177,6 @@ export default function Home() {
           {categories.map((c) => (
             <CategoryCard key={c.slug} category={c} />
           ))}
-        </div>
-      </section>
-
-      {/* Featured tools */}
-      <section className="bg-white border-y border-slate-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
-            Most popular tools
-          </h2>
-          <p className="text-slate-500 text-sm mb-8">
-            Hand-picked by what&apos;s blowing up this month
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featured.map((t) => (
-              <FeaturedToolCard key={t.slug} tool={t} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Effects preview */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <h2 className="text-2xl sm:text-3xl font-bold mb-2">
-          Text effects, all in one place
-        </h2>
-        <p className="text-slate-500 text-sm mb-8">
-          Type once, see every style.
-        </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-          <Link href="/effects/neon" className="aspect-square rounded-xl bg-slate-900 flex items-center justify-center">
-            <span className="text-3xl font-extrabold fx-neon">NEON</span>
-          </Link>
-          <Link href="/effects/fire" className="aspect-square rounded-xl bg-gradient-to-br from-orange-100 to-red-100 flex items-center justify-center">
-            <span className="text-3xl font-extrabold fx-fire">FIRE</span>
-          </Link>
-          <Link href="/effects/bubble" className="aspect-square rounded-xl bg-slate-100 flex items-center justify-center">
-            <span className="text-3xl font-extrabold fx-bubble">POP</span>
-          </Link>
-          <div className="aspect-square rounded-xl bg-slate-900 flex items-center justify-center">
-            <span className="text-3xl font-extrabold fx-gold">GOLD</span>
-          </div>
-          <Link href="/effects/cursive" className="aspect-square rounded-xl bg-slate-100 flex items-center justify-center">
-            <span className="text-3xl text-slate-900 fx-cursive">cursive</span>
-          </Link>
-          <div className="aspect-square rounded-xl bg-slate-900 flex items-center justify-center">
-            <span className="text-3xl font-extrabold fx-glitch">GLITCH</span>
-          </div>
         </div>
       </section>
 

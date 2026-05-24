@@ -26,6 +26,10 @@ export type Tool = {
     | null;
   faq: { q: string; a: string }[];
   featured?: boolean;
+  // Optional preview image (Vercel Blob URL). Used in FeaturedToolCard's hero
+  // area instead of the gradient + emoji. Set for premium tools where we have
+  // a real generated example to show off.
+  previewImage?: string;
 };
 
 export const tools: Tool[] = [
@@ -432,6 +436,8 @@ export const tools: Tool[] = [
     searchVolume: 18100,
     component: "ai-image-edit",
     featured: true,
+    previewImage:
+      "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com/editor-demo/bg-after.webp",
     faq: [
       {
         q: "How is this different from Photoshop?",
@@ -527,6 +533,8 @@ export const tools: Tool[] = [
     searchVolume: 4400,
     component: "ai-text-effect",
     featured: true,
+    previewImage:
+      "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com/showcase/3d-gold.webp",
     faq: [
       {
         q: "How is this different from your Fire / Neon / Gold CSS tools?",
@@ -740,6 +748,8 @@ export const tools: Tool[] = [
     searchVolume: 1300,
     component: "pet-portrait",
     featured: true,
+    previewImage:
+      "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com/pet-showcase/renaissance-painting.webp",
     faq: [
       {
         q: "Will it actually look like my pet?",
