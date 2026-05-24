@@ -25,6 +25,8 @@ import { TEXT_EFFECT_STYLES } from "@/lib/text-effect-styles";
 import PetPortraitTool from "@/components/tools/PetPortraitTool";
 import { PET_PORTRAIT_STYLES } from "@/lib/pet-portrait-styles";
 import AiImageEditorTool from "@/components/tools/AiImageEditorTool";
+import RichToolContent from "@/components/RichToolContent";
+import { getRichContent } from "@/lib/rich-content";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -125,6 +127,7 @@ export default async function ToolPage({
   const related = getToolsInCategory(category)
     .filter((x) => x.slug !== t.slug)
     .slice(0, 5);
+  const richContent = getRichContent(t.slug);
 
   // JSON-LD: BreadcrumbList + SoftwareApplication + FAQPage
   const jsonLd = {
@@ -190,24 +193,37 @@ export default async function ToolPage({
       <div className="flex flex-col lg:flex-row items-start gap-4 mb-8">
         <div className="flex-1">
           <h1 className="text-3xl sm:text-4xl font-bold mb-3">{t.name}</h1>
-          <p className="text-slate-600 max-w-2xl">{t.shortDescription}</p>
+          <p className="text-slate-600 max-w-2xl">
+            {richContent?.heroSubtitle ?? t.shortDescription}
+          </p>
         </div>
       </div>
 
-      {/* Actual tool */}
-      <div className="mb-12">{renderTool(t.component, t.slug)}</div>
+      {/* Actual tool — id is the anchor target for the CTA button at the bottom */}
+      <div id="tool-top" className="mb-12 scroll-mt-20">
+        {renderTool(t.component, t.slug)}
+      </div>
 
-      {/* SEO content + related */}
-      <div className="grid lg:grid-cols-3 gap-6">
+      {/* Premium rich content sections (only for tools registered in lib/rich-content.ts) */}
+      {richContent && <RichToolContent content={richContent} />}
+
+      {/* FAQ + Related sidebar (skipped intro paragraph when rich content covers it) */}
+      <div className="grid lg:grid-cols-3 gap-6 mt-16">
         <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-8">
-          <h2 className="text-xl font-bold mb-3">
-            How the {t.name} works
-          </h2>
-          <p className="text-slate-600 text-sm leading-relaxed mb-3">
-            {t.longDescription}
-          </p>
+          {!richContent && (
+            <>
+              <h2 className="text-xl font-bold mb-3">
+                How the {t.name} works
+              </h2>
+              <p className="text-slate-600 text-sm leading-relaxed mb-3">
+                {t.longDescription}
+              </p>
+            </>
+          )}
 
-          <h3 className="font-semibold mt-6 mb-3">FAQ</h3>
+          <h2 className="text-xl font-bold mb-3">
+            Frequently asked questions
+          </h2>
           {t.faq.map((f, i) => (
             <details
               key={i}
