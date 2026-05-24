@@ -22,6 +22,7 @@ export type Tool = {
     | "instagram-bio"
     | "ai-text-effect"
     | "pet-portrait"
+    | "ai-image-edit"
     | null;
   faq: { q: string; a: string }[];
   featured?: boolean;
@@ -410,6 +411,51 @@ export const tools: Tool[] = [
       {
         q: "Does it work on people, products, animals?",
         a: "Yes — all of those. Best results when the subject is clearly visible against a contrasting background.",
+      },
+    ],
+  },
+
+  // === ENHANCE — AI Image Editor (Nano Banana Edit, free-form prompt) ===
+  {
+    slug: "ai-image-editor",
+    category: "enhance",
+    name: "AI Image Editor",
+    shortDescription:
+      "Edit any photo with a text prompt — change background, color, remove objects, add details.",
+    longDescription:
+      "Upload an image, type what you want changed in plain English, and the AI applies the edit. Powered by Google's Nano Banana (Gemini 2.5 Flash Image) — the best model right now for preserving the original subject while transforming everything else. Works for: background changes, color swaps, object removal, adding sunglasses or hats, converting photos to sketches, product mockups, you name it. Free, no signup, output as PNG.",
+    icon: "🪄",
+    searchVolume: 18100,
+    component: "ai-image-edit",
+    featured: true,
+    faq: [
+      {
+        q: "How is this different from Photoshop?",
+        a: "Photoshop is a manual tool — you click and drag. This is prompt-based — you describe the edit in words and the AI does the heavy lifting in 10-20 seconds. Great for one-off edits where setting up Photoshop layers isn't worth the time.",
+      },
+      {
+        q: "Will it preserve the original photo's quality?",
+        a: "Yes — Nano Banana is designed to keep the original subject sharp and only modify what you ask. Resolution stays close to the input.",
+      },
+      {
+        q: "What kinds of edits work best?",
+        a: "Background changes, color swaps, object removal, adding small elements (glasses, hats, jewelry), style transfers (sketch, oil painting, anime). Avoid asking for many edits in one prompt — one or two at a time gives the best results.",
+      },
+      {
+        q: "Why is there a usage limit?",
+        a: "AI image editing costs us ~$0.04 per call. The 1/hour and 3/day per user cap lets us keep this tool free for everyone.",
+      },
+      {
+        q: "Is my image stored?",
+        a: "Your uploaded image is processed and deleted from our servers shortly after the edit. The result is hosted on a CDN for a few hours so you can download it.",
+      },
+      {
+        q: "Can I use the result commercially?",
+        a: "Yes — outputs are yours to use anywhere: client work, ecommerce listings, social posts.",
+      },
+      {
+        q: "Tips for the best results?",
+        a: "Be specific. 'Change the car to deep emerald green' is better than 'green car'. For complex edits, do them in steps — edit, download, re-upload, edit again.",
       },
     ],
   },

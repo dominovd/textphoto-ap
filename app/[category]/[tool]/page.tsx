@@ -24,6 +24,7 @@ import AiTextEffectTool from "@/components/tools/AiTextEffectTool";
 import { TEXT_EFFECT_STYLES } from "@/lib/text-effect-styles";
 import PetPortraitTool from "@/components/tools/PetPortraitTool";
 import { PET_PORTRAIT_STYLES } from "@/lib/pet-portrait-styles";
+import AiImageEditorTool from "@/components/tools/AiImageEditorTool";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -87,6 +88,8 @@ function renderTool(componentKey: string | null, slug: string) {
       const presetStyle = PET_PORTRAIT_STYLES.find((s) => s.seoSlug === slug);
       return <PetPortraitTool defaultStyleId={presetStyle?.id} />;
     }
+    case "ai-image-edit":
+      return <AiImageEditorTool />;
     default:
       return (
         <div className="rounded-2xl border border-dashed border-slate-300 p-12 text-center bg-white">

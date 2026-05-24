@@ -411,14 +411,19 @@ export async function aiTextImage(
 async function falNanoBananaEdit(
   prompt: string,
   imageUrl: string,
+  aspectRatio?: AspectRatio,
 ): Promise<string> {
   ensureFal();
+  // Only pass aspect_ratio when explicitly requested — Nano Banana preserves
+  // source dimensions by default, which is usually what users want for edits.
+  const input = {
+    prompt,
+    image_urls: [imageUrl],
+    num_images: 1,
+    ...(aspectRatio ? { aspect_ratio: aspectRatio } : {}),
+  };
   const result = await fal.subscribe("fal-ai/nano-banana/edit", {
-    input: {
-      prompt,
-      image_urls: [imageUrl],
-      num_images: 1,
-    },
+    input,
     logs: false,
   });
   const data = result.data as
@@ -430,20 +435,27 @@ async function falNanoBananaEdit(
 }
 
 /**
- * Image-to-image: take a user pet photo + prompt, return transformed image URL.
- * Uses Nano Banana Edit (best for preserving subject identity while composing
- * costumes/scenes around it).
+ * Generic image-to-image edit: take any user photo + free-form prompt,
+ * return transformed image URL. Powered by Nano Banana Edit.
+ *
+ * Used by:
+ *   - /api/pet-portrait (pet style preset + photo)
+ *   - /api/ai-image-edit (free-form prompt + photo)
  */
-export async function petPortrait(
+export async function editImageWithPrompt(
   file: File,
   prompt: string,
+  aspectRatio?: AspectRatio,
 ): Promise<{ resultUrl: string; provider: "nano-banana-edit" }> {
   ensureFal();
-  // Upload the user's pet photo to fal.storage (temporary CDN)
+  // Upload the user's photo to fal.storage (temporary CDN)
   const imageUrl = await fal.storage.upload(file);
-  const resultUrl = await falNanoBananaEdit(prompt, imageUrl);
+  const resultUrl = await falNanoBananaEdit(prompt, imageUrl, aspectRatio);
   return { resultUrl, provider: "nano-banana-edit" };
 }
+
+/** Backwards-compatible alias kept so /api/pet-portrait keeps working. */
+export const petPortrait = editImageWithPrompt;
 
 // -----------------------------------------------------------------------------
 // Colorize black-and-white photos — Replicate only (arielreplicate/deoldify)
