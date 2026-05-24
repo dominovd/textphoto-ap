@@ -156,14 +156,11 @@ export default function SearchClient({
               >
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-2xl">{t.icon}</span>
-                  <div className="flex items-center gap-2 text-xs text-slate-400">
-                    {t.component && (
-                      <span className="px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-medium">
-                        Live
-                      </span>
-                    )}
-                    <span>{formatVolume(t.searchVolume)}/mo</span>
-                  </div>
+                  {t.component && (
+                    <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-medium">
+                      Live
+                    </span>
+                  )}
                 </div>
                 <h3 className="font-semibold mb-1 group-hover:text-brand-700">
                   {t.name}
@@ -188,9 +185,4 @@ export default function SearchClient({
       )}
     </div>
   );
-}
-
-function formatVolume(n: number): string {
-  if (n >= 1000) return `${(n / 1000).toFixed(1).replace(".0", "")}k`;
-  return String(n);
 }

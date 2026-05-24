@@ -19,9 +19,6 @@ export default function FeaturedToolCard({ tool }: { tool: Tool }) {
           <span className="text-xs px-2 py-0.5 rounded bg-slate-100 text-slate-700">
             {category?.name ?? tool.category}
           </span>
-          <span className="text-xs text-slate-400">
-            {(tool.searchVolume / 1000).toFixed(1).replace(".0", "")}k searches/mo
-          </span>
         </div>
         <h3 className="font-semibold mb-1 group-hover:text-brand-700">
           {tool.name}
