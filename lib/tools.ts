@@ -33,8 +33,9 @@ export const tools: Tool[] = [
   {
     slug: "instagram-caption-generator",
     category: "captions",
-    name: "Instagram Caption Generator",
-    shortDescription: "Drop a photo → 10 caption ideas with hashtags.",
+    name: "Free AI Instagram Caption Generator",
+    shortDescription:
+      "Drop a photo → 10 caption ideas with hashtags. Free AI, no signup.",
     longDescription:
       "Our AI looks at what's actually in your photo — the subject, the colours, the mood — and writes captions that fit the moment. Pick a vibe (aesthetic, funny, romantic, savage) and the model adjusts tone, length, and hashtag relevance accordingly.",
     icon: "📷",
@@ -63,8 +64,9 @@ export const tools: Tool[] = [
   {
     slug: "tiktok-caption-generator",
     category: "captions",
-    name: "TikTok Caption Generator",
-    shortDescription: "Hooks + hashtags optimised for the For You page.",
+    name: "Free AI TikTok Caption Generator",
+    shortDescription:
+      "Free AI TikTok captions — hooks + hashtags optimised for the For You page.",
     longDescription:
       "Generate TikTok captions designed for the For You algorithm — short hooks under 100 chars, trending hashtags like #fyp #foryou, emoji placement that boosts engagement.",
     icon: "🎵",
@@ -85,7 +87,7 @@ export const tools: Tool[] = [
   {
     slug: "ai-photo-caption-generator",
     category: "captions",
-    name: "AI Photo Caption Generator",
+    name: "Free AI Photo Caption Generator",
     shortDescription: "Universal caption AI — works for any platform.",
     longDescription:
       "Universal AI caption generator. Works for any photo: products, food, travel, portraits. Pick a vibe and get 10 captions that fit Instagram, Facebook, X, or anywhere else.",
@@ -102,9 +104,9 @@ export const tools: Tool[] = [
   {
     slug: "instagram-bio-generator",
     category: "captions",
-    name: "Instagram Bio Generator",
+    name: "Free AI Instagram Bio Generator",
     shortDescription:
-      "10 bio ideas in 6 styles — fits the 150-char limit. Free, no signup.",
+      "Free AI bio writer — 10 ideas in 6 styles, fits the 150-char limit. No signup.",
     longDescription:
       "Tell us your niche (e.g. fitness coach, food blogger, indie dev), pick a vibe, optionally add keywords — get 10 bios crafted to fit Instagram's 150-character limit. Vary tones from aesthetic to edgy, with or without emojis.",
     icon: "👤",
@@ -130,9 +132,9 @@ export const tools: Tool[] = [
   {
     slug: "image-to-text",
     category: "ocr",
-    name: "Image to Text (OCR online)",
+    name: "Free AI Image to Text (OCR)",
     shortDescription:
-      "Extract text from any image — receipts, screenshots, handwriting, scanned docs.",
+      "Free AI OCR — extract text from any image: receipts, screenshots, handwriting, scanned docs.",
     longDescription:
       "Drop any image and get the text inside it — instantly. Works on receipts, screenshots, scanned documents, even handwritten notes. Supports 30+ languages.",
     icon: "🔤",
@@ -161,8 +163,9 @@ export const tools: Tool[] = [
   {
     slug: "handwriting-to-text",
     category: "ocr",
-    name: "Handwriting to Text",
-    shortDescription: "Turn handwritten notes into editable text.",
+    name: "Free AI Handwriting to Text Converter",
+    shortDescription:
+      "Free AI handwriting recognition — turn handwritten notes into editable text.",
     longDescription:
       "AI handwriting recognition. Upload a photo of handwritten notes, letters, or signed forms and get editable digital text. Works on both print and cursive.",
     icon: "✍️",
@@ -186,8 +189,9 @@ export const tools: Tool[] = [
   {
     slug: "translate-from-photo",
     category: "ocr",
-    name: "Translate Text from Photo",
-    shortDescription: "Extract + translate text from any image, in one click.",
+    name: "Free AI Photo Translator",
+    shortDescription:
+      "Free AI photo translator — extract + translate text from any image in one click.",
     longDescription:
       "Two steps in one — OCR + translation. Useful for menus, signs, documents, screenshots in foreign languages. Pick your target language and get both the original detected text and the translation.",
     icon: "🌐",
@@ -322,9 +326,9 @@ export const tools: Tool[] = [
   {
     slug: "alt-text-generator",
     category: "alt-text",
-    name: "AI Alt Text Generator",
+    name: "Free AI Alt Text Generator",
     shortDescription:
-      "Generate SEO-friendly alt text for any image in 1 click.",
+      "Free AI alt text — generate SEO-friendly descriptions for any image in 1 click.",
     longDescription:
       "Drop an image, get 3 alt text variants in seconds — short for SEO, medium for general use, detailed for complex images. Helps with both screen readers and SEO.",
     icon: "♿",
@@ -351,9 +355,9 @@ export const tools: Tool[] = [
   {
     slug: "photo-upscaler",
     category: "enhance",
-    name: "Photo Upscaler",
+    name: "Free AI Photo Upscaler",
     shortDescription:
-      "Upscale your photo 2× or 4× without losing quality. AI sharpening.",
+      "Free AI photo upscaler — 2× or 4× without losing quality. Realistic detail, no signup.",
     longDescription:
       "Upload any photo and get back a sharper, higher-resolution version — 2× or 4× larger. Powered by AI super-resolution models that add realistic detail, not just bigger pixels. Great for small product shots, old photos, or screenshots you need to print.",
     icon: "🔍",
@@ -382,9 +386,9 @@ export const tools: Tool[] = [
   {
     slug: "background-remover",
     category: "enhance",
-    name: "Background Remover",
+    name: "Free AI Background Remover",
     shortDescription:
-      "Remove the background from any photo in 2 seconds. Free, no signup.",
+      "Free AI background remover — clean cut-out from any photo in 2 seconds. No signup.",
     longDescription:
       "Drop a photo and get back a transparent PNG with the background removed — clean cut-out edges, even on hair and fur. Powered by an AI model that runs in seconds. Use it for product shots, profile pics, social media, design comps.",
     icon: "✂️",
@@ -419,9 +423,9 @@ export const tools: Tool[] = [
   {
     slug: "ai-image-editor",
     category: "enhance",
-    name: "AI Image Editor",
+    name: "Free AI Image Editor",
     shortDescription:
-      "Edit any photo with a text prompt — change background, color, remove objects, add details.",
+      "Free AI image editor — change background, color, or add details with a text prompt. No signup.",
     longDescription:
       "Upload an image, type what you want changed in plain English, and the AI applies the edit. Powered by Google's Nano Banana (Gemini 2.5 Flash Image) — the best model right now for preserving the original subject while transforming everything else. Works for: background changes, color swaps, object removal, adding sunglasses or hats, converting photos to sketches, product mockups, you name it. Free, no signup, output as PNG.",
     icon: "🪄",
@@ -464,7 +468,7 @@ export const tools: Tool[] = [
   {
     slug: "photo-colorizer",
     category: "enhance",
-    name: "Photo Colorizer",
+    name: "Free AI Photo Colorizer",
     shortDescription:
       "Colorize black-and-white photos with AI. Free, no signup.",
     longDescription:
@@ -490,9 +494,9 @@ export const tools: Tool[] = [
   {
     slug: "photo-to-cartoon",
     category: "enhance",
-    name: "Photo to Cartoon",
+    name: "Free AI Photo to Cartoon Converter",
     shortDescription:
-      "Turn any photo into a cartoon-style illustration. Free, no signup.",
+      "Free AI cartoonifier — turn any photo into a cartoon-style illustration. No signup.",
     longDescription:
       "Upload a photo and get back a cartoonified version — clean lines, simplified shapes, illustration style. Works on faces, pets, products, scenes.",
     icon: "🎭",
@@ -514,9 +518,9 @@ export const tools: Tool[] = [
   {
     slug: "ai-text-effect",
     category: "text-art",
-    name: "AI Text Effect Generator",
+    name: "Free AI Text Effect Generator",
     shortDescription:
-      "Type a word, pick a style — get a cinematic image. Fire, neon, gold, cyberpunk, and more.",
+      "Free AI text effects — type a word, pick a style, get a cinematic image. Fire, neon, gold, cyberpunk, and more.",
     longDescription:
       "Real AI image generation, not CSS tricks. The model renders your text as part of a full scene — realistic fire flames, glowing neon signs, premium gold logos, cyberpunk holograms. Download as PNG, share on socials. Built on Google's Nano Banana (Gemini 2.5 Flash Image), the best model for rendering specific text inside images.",
     icon: "🎨",
@@ -547,9 +551,9 @@ export const tools: Tool[] = [
   {
     slug: "fire-text-generator",
     category: "text-art",
-    name: "Fire Text Generator (AI)",
+    name: "Free AI Fire Text Generator",
     shortDescription:
-      "Generate realistic fire text — orange flames forming any word you type.",
+      "Free AI fire text generator — realistic orange flames forming any word you type.",
     longDescription:
       "AI-generated fire text — real flame textures, embers, smoke, cinematic lighting. Type a word, get a high-resolution image with your text engulfed in fire. Choose between classic orange flames, blue plasma flame, inferno, or toxic green. Download as PNG, post anywhere — gaming logos, band art, posters, video thumbnails.",
     icon: "🔥",
@@ -573,7 +577,7 @@ export const tools: Tool[] = [
   {
     slug: "neon-sign-generator",
     category: "text-art",
-    name: "Neon Sign Generator (AI)",
+    name: "Free AI Neon Sign Generator",
     shortDescription:
       "Turn any word into a glowing neon sign on a brick wall. AI-generated.",
     longDescription:
@@ -599,7 +603,7 @@ export const tools: Tool[] = [
   {
     slug: "3d-text-generator",
     category: "text-art",
-    name: "3D Text Generator (AI)",
+    name: "Free AI 3D Text Generator",
     shortDescription:
       "Premium 3D rendered text — gold, chrome, marble, bronze. AI-generated.",
     longDescription:
@@ -625,9 +629,9 @@ export const tools: Tool[] = [
   {
     slug: "youtube-thumbnail-text",
     category: "text-art",
-    name: "YouTube Thumbnail Text Generator (AI)",
+    name: "Free AI YouTube Thumbnail Text Generator",
     shortDescription:
-      "Bold high-CTR thumbnail text — yellow outline, red shadow, click-worthy.",
+      "Free AI YouTube thumbnail text — bold high-CTR letters, yellow outline, red shadow.",
     longDescription:
       "Generate the kind of bold, eye-catching text overlay that YouTube creators pay designers for. Yellow outlined letters, dramatic red drop shadow, the click-bait aesthetic that pulls clicks. Type your hook word — get an image you can drop straight into your thumbnail composition.",
     icon: "▶️",
@@ -651,9 +655,9 @@ export const tools: Tool[] = [
   {
     slug: "discord-banner-text",
     category: "text-art",
-    name: "Discord Banner Text Generator (AI)",
+    name: "Free AI Discord Banner Text Generator",
     shortDescription:
-      "Bold gaming banner text — fire, sparks, esports tournament aesthetic.",
+      "Free AI Discord banner text — bold gaming letters with fire, sparks, esports aesthetic.",
     longDescription:
       "Generate banner-quality text for your Discord server, gaming community, or esports team. Dramatic lighting, sparks, explosive composition. Drop the output into your server banner, role icon, or announcement post.",
     icon: "🎮",
@@ -677,9 +681,9 @@ export const tools: Tool[] = [
   {
     slug: "twitch-panel-text",
     category: "text-art",
-    name: "Twitch Panel Text Generator (AI)",
+    name: "Free AI Twitch Panel Text Generator",
     shortDescription:
-      "Custom panel headers for your Twitch channel — purple gaming aesthetic.",
+      "Free AI Twitch panel headers — custom purple gaming aesthetic for your channel.",
     longDescription:
       "Generate the panel header graphics for your Twitch profile — 'About', 'Schedule', 'Donate', whatever you need. Purple-and-black gaming aesthetic with glowing accents that matches Twitch's UI. Way better than typing plain text into a flat banner.",
     icon: "🎮",
@@ -699,9 +703,9 @@ export const tools: Tool[] = [
   {
     slug: "logo-text-generator",
     category: "text-art",
-    name: "Logo Text Generator (AI)",
+    name: "Free AI Logo Text Generator",
     shortDescription:
-      "Clean modern wordmark for your brand — minimalist typography, premium feel.",
+      "Free AI logo text generator — clean minimalist wordmark with premium typography.",
     longDescription:
       "Generate a clean, minimalist logo wordmark for your brand or product. Modern sans-serif typography with lots of negative space, single accent color, premium feel. Great starting point for indie products, personal brands, side-project naming, packaging mockups.",
     icon: "⚪",
@@ -727,9 +731,9 @@ export const tools: Tool[] = [
   {
     slug: "ai-pet-portrait-generator",
     category: "pet",
-    name: "AI Pet Portrait Generator",
+    name: "Free AI Pet Portrait Generator",
     shortDescription:
-      "Turn your pet into a knight, astronaut, chef — 12 styles, free, no signup.",
+      "Free AI pet portraits — turn your pet into a knight, astronaut, chef, and 9 more styles. No signup.",
     longDescription:
       "Upload one clear photo of your pet and pick a style — knight in shining armor, astronaut floating in space, mafia boss in a pinstripe suit, chef in a kitchen, Renaissance oil painting. The AI keeps your pet's actual face, breed, and fur color and composes the costume and scene around it. Download as PNG and share. Powered by Google's Nano Banana (Gemini 2.5 Flash Image), the best model for preserving subject identity while editing.",
     icon: "🐾",
@@ -772,9 +776,9 @@ export const tools: Tool[] = [
   {
     slug: "renaissance-pet-portrait",
     category: "pet",
-    name: "Renaissance Pet Portrait Generator (AI)",
+    name: "Free AI Renaissance Pet Portrait Generator",
     shortDescription:
-      "Turn your pet into a 17th-century oil painting — royal velvet, chiaroscuro lighting.",
+      "Free AI Renaissance pet portrait — turn your pet into a 17th-century oil painting with royal velvet.",
     longDescription:
       "Upload one photo of your pet and get back a richly painted Renaissance-style portrait — your pet in a velvet doublet with lace ruff collar, painted in the style of Rembrandt or Van Dyck, dark moody chiaroscuro lighting, visible oil brushstrokes. The AI preserves your pet's breed, fur color, and face. The trending viral pet portrait style, made free.",
     icon: "🎨",
@@ -799,9 +803,9 @@ export const tools: Tool[] = [
   {
     slug: "cat-mafia-portrait",
     category: "pet",
-    name: "Cat Mafia Portrait (AI)",
+    name: "Free AI Cat Mafia Portrait Generator",
     shortDescription:
-      "Your cat as a 1920s mafia boss — pinstripe suit, fedora, cigar.",
+      "Free AI cat mafia portrait — your cat as a 1920s mafia boss in pinstripe suit and fedora.",
     longDescription:
       "Upload one photo of your cat (or any pet) and get a 1920s mafia boss portrait — pinstripe suit, fedora hat, cigar, the works. Photorealistic and shareable. The AI keeps your cat's face and fur color and dresses it up. The classic pet-as-gangster meme, done in seconds.",
     icon: "🎩",
@@ -821,9 +825,9 @@ export const tools: Tool[] = [
   {
     slug: "dog-astronaut-portrait",
     category: "pet",
-    name: "Dog Astronaut Portrait (AI)",
+    name: "Free AI Dog Astronaut Portrait Generator",
     shortDescription:
-      "Your dog as a NASA astronaut — spacesuit, helmet, Earth in the background.",
+      "Free AI dog astronaut portrait — your dog in a NASA spacesuit with Earth in the background.",
     longDescription:
       "Upload a photo of your dog and get an astronaut portrait — white NASA spacesuit, helmet with the visor up showing your dog's face, Earth floating behind. The AI preserves your dog's breed, color, and face. Great for kids' rooms, holiday cards, social media.",
     icon: "🚀",
@@ -843,9 +847,9 @@ export const tools: Tool[] = [
   {
     slug: "ai-pet-gym-portrait",
     category: "pet",
-    name: "Pet Gym Athlete Portrait (AI)",
+    name: "Free AI Pet Gym Portrait Generator",
     shortDescription:
-      "Your pet lifting dumbbells, wearing headphones — viral gym pet meme.",
+      "Free AI pet gym portrait — your pet lifting dumbbells with headphones, viral meme aesthetic.",
     longDescription:
       "Upload your pet's photo and turn them into a buff gym athlete — black tank top, dumbbells in their paws, red over-ear headphones, modern gym in the background. The viral 'pet at the gym' aesthetic that flooded TikTok and Reddit. AI keeps your pet's face and breed.",
     icon: "💪",
@@ -863,8 +867,9 @@ export const tools: Tool[] = [
   {
     slug: "ai-meme-generator",
     category: "memes",
-    name: "AI Meme Generator",
-    shortDescription: "Upload a photo, get 5 viral meme captions for it.",
+    name: "Free AI Meme Generator",
+    shortDescription:
+      "Free AI meme generator — upload a photo, get 5 viral meme captions instantly.",
     longDescription:
       "AI looks at your photo and writes 5 meme-worthy captions in the style of your choice — relatable, savage, wholesome, Gen-Z, or a mix.",
     icon: "😂",

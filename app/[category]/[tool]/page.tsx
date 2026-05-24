@@ -38,8 +38,15 @@ export async function generateMetadata({
   const { category, tool } = await params;
   const t = getTool(category, tool);
   if (!t) return { title: "Not found" };
+  // For AI tools the name already starts with "Free AI …", so we just append
+  // the brand. CSS-only tools keep their original short name and get an
+  // explanatory suffix instead.
+  const isAiTool = t.name.startsWith("Free AI ");
+  const title = isAiTool
+    ? `${t.name} | TextPhoto`
+    : `${t.name} — Free, no signup`;
   return {
-    title: `${t.name} — Free, no signup`,
+    title,
     description: t.shortDescription,
     alternates: {
       canonical: `https://textphoto.app/${t.category}/${t.slug}`,
