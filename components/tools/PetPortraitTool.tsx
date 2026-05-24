@@ -243,22 +243,21 @@ function PetPortraitInner({
           })}
         </div>
 
-        <details className="mt-4 text-sm">
-          <summary className="cursor-pointer font-semibold text-slate-700 hover:text-brand-600">
-            3. Optional: add custom details
-          </summary>
-          <textarea
-            value={customNotes}
-            onChange={(e) => setCustomNotes(e.target.value.slice(0, 200))}
-            maxLength={200}
-            rows={2}
-            placeholder='e.g. "wearing red sunglasses" or "on a beach at sunset"'
-            className="w-full mt-2 px-3 py-2 rounded-lg border border-slate-200 text-sm"
-          />
-          <p className="text-xs text-slate-400 mt-1">
-            {customNotes.length}/200 characters · keep it short and concrete
-          </p>
-        </details>
+        <label className="text-sm font-semibold mt-5 mb-2 block">
+          3. <span className="text-slate-500 font-medium">Optional:</span> add
+          custom details
+        </label>
+        <textarea
+          value={customNotes}
+          onChange={(e) => setCustomNotes(e.target.value.slice(0, 200))}
+          maxLength={200}
+          rows={2}
+          placeholder='e.g. "wearing red sunglasses" or "on a beach at sunset"'
+          className="w-full px-3 py-2 rounded-lg border border-slate-200 text-sm"
+        />
+        <p className="text-xs text-slate-400 mt-1">
+          {customNotes.length}/200 characters · keep it short and concrete
+        </p>
 
         {error && (
           <div className="mt-4 p-3 rounded-lg bg-red-50 border border-red-200 text-red-700 text-xs">

@@ -1,9 +1,22 @@
 import { NextResponse } from "next/server";
 import { put } from "@vercel/blob";
 import { getStyle } from "@/lib/text-effect-styles";
+import { getPetStyle } from "@/lib/pet-portrait-styles";
 
 export const runtime = "nodejs";
 export const maxDuration = 30;
+
+type Kind = "text-effect" | "pet-portrait";
+
+function validateStyle(kind: Kind, styleId: string): boolean {
+  if (kind === "pet-portrait") return !!getPetStyle(styleId);
+  return !!getStyle(styleId);
+}
+
+function blobPathFor(kind: Kind, styleId: string): string {
+  if (kind === "pet-portrait") return `pet-showcase/${styleId}.webp`;
+  return `showcase/${styleId}.webp`;
+}
 
 /**
  * Internal showcase uploader.
@@ -41,14 +54,19 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const styleId = String(body.styleId || "");
     const base64 = String(body.base64 || "");
+    const kindRaw = String(body.kind || "text-effect");
+    const kind: Kind = kindRaw === "pet-portrait" ? "pet-portrait" : "text-effect";
     if (!styleId || !base64) {
       return NextResponse.json(
         { error: "styleId and base64 required" },
         { status: 400 },
       );
     }
-    if (!getStyle(styleId)) {
-      return NextResponse.json({ error: "Unknown style" }, { status: 400 });
+    if (!validateStyle(kind, styleId)) {
+      return NextResponse.json(
+        { error: `Unknown style for kind=${kind}` },
+        { status: 400 },
+      );
     }
 
     const buf = Buffer.from(base64, "base64");
@@ -59,14 +77,19 @@ export async function POST(req: Request) {
       );
     }
 
-    const blob = await put(`showcase/${styleId}.webp`, buf, {
+    const blob = await put(blobPathFor(kind, styleId), buf, {
       access: "public",
       contentType: "image/webp",
       addRandomSuffix: false,
       cacheControlMaxAge: 31536000,
     });
 
-    return NextResponse.json({ styleId, url: blob.url, bytes: buf.byteLength });
+    return NextResponse.json({
+      styleId,
+      kind,
+      url: blob.url,
+      bytes: buf.byteLength,
+    });
   } catch (err) {
     console.error("/api/showcase-upload error:", err);
     const msg = err instanceof Error ? err.message : "Internal error";
