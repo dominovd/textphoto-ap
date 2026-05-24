@@ -1,17 +1,11 @@
 import Link from "next/link";
+import Logo from "./Logo";
 
 export default function Header() {
   return (
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-4">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="w-9 h-9 rounded-xl bg-gradient-to-br from-brand-500 to-pink-500 flex items-center justify-center text-white font-bold">
-            T
-          </span>
-          <span className="font-bold text-lg">
-            textphoto<span className="text-brand-600">.app</span>
-          </span>
-        </Link>
+        <Logo />
 
         <nav className="hidden md:flex items-center gap-1 ml-6">
           <Link

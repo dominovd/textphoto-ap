@@ -1,17 +1,13 @@
 import Link from "next/link";
+import Logo from "./Logo";
 
 export default function Footer() {
   return (
     <footer className="border-t border-slate-200 bg-white mt-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 grid md:grid-cols-4 gap-8 text-sm">
         <div>
-          <div className="flex items-center gap-2 mb-3">
-            <span className="w-8 h-8 rounded-lg bg-gradient-to-br from-brand-500 to-pink-500 flex items-center justify-center text-white font-bold text-sm">
-              T
-            </span>
-            <span className="font-bold">
-              textphoto<span className="text-brand-600">.app</span>
-            </span>
+          <div className="mb-3">
+            <Logo size="sm" />
           </div>
           <p className="text-slate-500 text-xs">
             Free AI tools for photo + text. No sign up.
