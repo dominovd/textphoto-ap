@@ -207,56 +207,99 @@ export default async function ToolPage({
       {/* Premium rich content sections (only for tools registered in lib/rich-content.ts) */}
       {richContent && <RichToolContent content={richContent} />}
 
-      {/* FAQ + Related sidebar (skipped intro paragraph when rich content covers it) */}
-      <div className="grid lg:grid-cols-3 gap-6 mt-16">
-        <div className="lg:col-span-2 bg-white rounded-2xl border border-slate-200 p-8">
-          {!richContent && (
-            <>
-              <h2 className="text-xl font-bold mb-3">
-                How the {t.name} works
-              </h2>
-              <p className="text-slate-600 text-sm leading-relaxed mb-3">
-                {t.longDescription}
-              </p>
-            </>
-          )}
+      {/* Intro paragraph (only for tools without rich content) */}
+      {!richContent && (
+        <div className="mt-16 max-w-3xl mx-auto bg-white rounded-2xl border border-slate-200 p-8">
+          <h2 className="text-xl font-bold mb-3">How the {t.name} works</h2>
+          <p className="text-slate-600 text-sm leading-relaxed">
+            {t.longDescription}
+          </p>
+        </div>
+      )}
 
-          <h2 className="text-xl font-bold mb-3">
+      {/* FAQ — Pixelbin-style pill accordion */}
+      <section className="mt-16 max-w-3xl mx-auto">
+        <div className="text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2">
             Frequently asked questions
           </h2>
+          <p className="text-slate-500 text-sm">
+            Everything you need to know about the {t.name}. Still stuck? Email
+            us at{" "}
+            <a
+              href="mailto:info@textphoto.app"
+              className="text-brand-600 hover:underline"
+            >
+              info@textphoto.app
+            </a>
+            .
+          </p>
+        </div>
+        <div className="space-y-3">
           {t.faq.map((f, i) => (
             <details
               key={i}
-              className="text-sm text-slate-600 mb-2 border-b border-slate-100 pb-2"
+              className="group rounded-2xl border border-slate-200 bg-white hover:border-slate-300 transition open:border-brand-300 open:shadow-sm"
             >
-              <summary className="cursor-pointer font-medium text-slate-900">
-                {f.q}
+              <summary className="cursor-pointer list-none [&::-webkit-details-marker]:hidden flex items-center justify-between gap-4 p-5">
+                <span className="font-medium text-slate-900 text-sm sm:text-base">
+                  {f.q}
+                </span>
+                <span className="shrink-0 w-7 h-7 rounded-full bg-slate-100 group-open:bg-brand-100 flex items-center justify-center transition">
+                  <svg
+                    className="w-4 h-4 text-slate-500 group-open:text-brand-700 group-open:rotate-45 transition-transform duration-200"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    strokeLinecap="round"
+                  >
+                    <path d="M12 5v14M5 12h14" />
+                  </svg>
+                </span>
               </summary>
-              <p className="mt-2">{f.a}</p>
+              <div className="px-5 pb-5 text-sm text-slate-600 leading-relaxed">
+                {f.a}
+              </div>
             </details>
           ))}
         </div>
+      </section>
 
-        <aside className="space-y-4">
-          {related.length > 0 && (
-            <div className="bg-white rounded-2xl border border-slate-200 p-6">
-              <h3 className="font-semibold mb-3 text-sm">Related tools</h3>
-              <ul className="space-y-2 text-sm">
-                {related.map((r) => (
-                  <li key={r.slug}>
-                    <Link
-                      href={`/${r.category}/${r.slug}`}
-                      className="text-brand-600 hover:underline"
-                    >
-                      → {r.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </aside>
-      </div>
+      {/* Related tools — full-width card grid */}
+      {related.length > 0 && (
+        <section className="mt-16">
+          <div className="text-center mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+              More AI tools in {cat?.name ?? t.category}
+            </h2>
+            <p className="text-slate-500 text-sm">
+              Free, no signup — try a different one next.
+            </p>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            {related.map((r) => (
+              <Link
+                key={r.slug}
+                href={`/${r.category}/${r.slug}`}
+                className="group block rounded-2xl border border-slate-200 bg-white hover:border-brand-300 hover:shadow-md transition p-4"
+              >
+                <div
+                  className={`w-11 h-11 rounded-xl bg-gradient-to-br ${cat?.gradient ?? "from-slate-500 to-slate-700"} flex items-center justify-center text-white text-xl mb-3 shadow-sm group-hover:scale-105 transition-transform`}
+                >
+                  {r.icon}
+                </div>
+                <h3 className="font-semibold text-sm leading-tight mb-1 group-hover:text-brand-700">
+                  {r.name}
+                </h3>
+                <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                  {r.shortDescription}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

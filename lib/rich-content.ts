@@ -77,32 +77,8 @@ const BLOB_BASE = "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com";
 const aiImageEditor: RichContent = {
   heroSubtitle:
     "Edit any photo with a simple text prompt. Change backgrounds, swap colours, remove objects, add details — powered by Google's Nano Banana model. Free, no signup, no watermark.",
-  gallery: {
-    title: "See what one prompt can do",
-    subtitle: "Drag any of these to compare before / after",
-    items: [
-      {
-        src: `${BLOB_BASE}/editor-demo/bg-before.webp`,
-        alt: "Astronaut sitting in a cozy living room — original",
-        caption: "Original photo",
-      },
-      {
-        src: `${BLOB_BASE}/editor-demo/bg-after.webp`,
-        alt: "Same astronaut now on a tropical beach at sunset",
-        caption: "Prompt: change background to beach at sunset",
-      },
-      {
-        src: `${BLOB_BASE}/editor-demo/color-before.webp`,
-        alt: "Lone figure under a tree with yellow autumn leaves — original",
-        caption: "Original photo",
-      },
-      {
-        src: `${BLOB_BASE}/editor-demo/color-after.webp`,
-        alt: "Same scene but with vivid green leaves on the tree",
-        caption: "Prompt: change leaves to vivid green",
-      },
-    ],
-  },
+  // No `gallery` block — the before/after slider inside the tool itself already
+  // showcases real edits; a separate gallery would duplicate that content.
   howItWorks: {
     title: "How to edit images with AI in 3 steps",
     steps: [
