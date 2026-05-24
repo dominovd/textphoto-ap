@@ -27,6 +27,7 @@ import { PET_PORTRAIT_STYLES } from "@/lib/pet-portrait-styles";
 import AiImageEditorTool from "@/components/tools/AiImageEditorTool";
 import RichToolContent from "@/components/RichToolContent";
 import { getRichContent } from "@/lib/rich-content";
+import { ToolIcon, getToolIconColors } from "@/lib/tool-icons";
 
 export function generateStaticParams() {
   return tools.map((t) => ({ category: t.category, tool: t.slug }));
@@ -278,25 +279,28 @@ export default async function ToolPage({
             </p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            {related.map((r) => (
-              <Link
-                key={r.slug}
-                href={`/${r.category}/${r.slug}`}
-                className="group block rounded-2xl border border-slate-200 bg-white hover:border-brand-300 hover:shadow-md transition p-4"
-              >
-                <div
-                  className={`w-11 h-11 rounded-xl bg-gradient-to-br ${cat?.gradient ?? "from-slate-500 to-slate-700"} flex items-center justify-center text-white text-xl mb-3 shadow-sm group-hover:scale-105 transition-transform`}
+            {related.map((r) => {
+              const colors = getToolIconColors(r.category);
+              return (
+                <Link
+                  key={r.slug}
+                  href={`/${r.category}/${r.slug}`}
+                  className="group block rounded-2xl border border-slate-200 bg-white hover:border-brand-300 hover:shadow-md transition p-4"
                 >
-                  {r.icon}
-                </div>
-                <h3 className="font-semibold text-sm leading-tight mb-1 group-hover:text-brand-700">
-                  {r.name}
-                </h3>
-                <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
-                  {r.shortDescription}
-                </p>
-              </Link>
-            ))}
+                  <div
+                    className={`w-11 h-11 rounded-xl ${colors.bg} ${colors.fg} flex items-center justify-center text-[20px] mb-3 group-hover:scale-105 transition-transform`}
+                  >
+                    <ToolIcon slug={r.slug} />
+                  </div>
+                  <h3 className="font-semibold text-sm leading-tight mb-1 group-hover:text-brand-700">
+                    {r.name}
+                  </h3>
+                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">
+                    {r.shortDescription}
+                  </p>
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}

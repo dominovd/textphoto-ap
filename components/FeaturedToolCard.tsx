@@ -2,9 +2,11 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Tool } from "@/lib/tools";
 import { getCategory } from "@/lib/categories";
+import { ToolIcon, getToolIconColors } from "@/lib/tool-icons";
 
 export default function FeaturedToolCard({ tool }: { tool: Tool }) {
   const category = getCategory(tool.category);
+  const { bg, fg } = getToolIconColors(tool.category);
   return (
     <Link
       href={`/${tool.category}/${tool.slug}`}
@@ -22,11 +24,11 @@ export default function FeaturedToolCard({ tool }: { tool: Tool }) {
           />
         </div>
       ) : (
-        // Fallback — gradient + emoji for tools without a generated preview yet.
+        // Fallback — duotone icon centered on a pastel category backdrop.
         <div
-          className={`aspect-[16/9] bg-gradient-to-br ${category?.gradient ?? "from-slate-500 to-slate-700"} flex items-center justify-center text-white text-5xl group-hover:scale-105 transition-transform duration-300`}
+          className={`aspect-[16/9] ${bg} ${fg} flex items-center justify-center text-[64px] group-hover:scale-105 transition-transform duration-300`}
         >
-          {tool.icon}
+          <ToolIcon slug={tool.slug} />
         </div>
       )}
       <div className="p-5">
