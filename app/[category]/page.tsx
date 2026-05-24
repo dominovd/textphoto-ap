@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { categories, getCategory } from "@/lib/categories";
 import { getToolsInCategory } from "@/lib/tools";
 import ToolCard from "@/components/ToolCard";
+import { CategoryIcon } from "@/lib/category-icons";
 
 export function generateStaticParams() {
   return categories.map((c) => ({ category: c.slug }));
@@ -93,9 +94,9 @@ export default async function CategoryPage({
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span
-              className={`w-10 h-10 rounded-xl bg-gradient-to-br ${cat.gradient} flex items-center justify-center text-white text-xl`}
+              className={`w-11 h-11 rounded-xl bg-gradient-to-br ${cat.gradient} flex items-center justify-center text-white shadow-sm`}
             >
-              {cat.icon}
+              <CategoryIcon slug={cat.slug} />
             </span>
             <h1 className="text-3xl font-bold">{cat.name}</h1>
           </div>
