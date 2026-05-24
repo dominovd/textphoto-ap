@@ -14,9 +14,9 @@ export default function Footer() {
           </p>
         </div>
         <div>
-          <h4 className="font-semibold mb-3 text-xs uppercase text-slate-400">
+          <div className="font-semibold mb-3 text-xs uppercase text-slate-400">
             Categories
-          </h4>
+          </div>
           <ul className="space-y-1.5 text-slate-600">
             <li>
               <Link href="/captions" className="hover:text-brand-600">
@@ -46,9 +46,9 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-3 text-xs uppercase text-slate-400">
+          <div className="font-semibold mb-3 text-xs uppercase text-slate-400">
             Resources
-          </h4>
+          </div>
           <ul className="space-y-1.5 text-slate-600">
             <li>Blog (coming soon)</li>
             <li>API (coming soon)</li>
@@ -63,9 +63,9 @@ export default function Footer() {
           </ul>
         </div>
         <div>
-          <h4 className="font-semibold mb-3 text-xs uppercase text-slate-400">
+          <div className="font-semibold mb-3 text-xs uppercase text-slate-400">
             Company
-          </h4>
+          </div>
           <ul className="space-y-1.5 text-slate-600">
             <li>
               <Link href="/about" className="hover:text-brand-600">
