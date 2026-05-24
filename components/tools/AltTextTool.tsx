@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UploadAffordance } from "@/lib/tool-icons";
 
 type Variant = {
   name: string;
@@ -81,7 +82,7 @@ export default function AltTextTool() {
             />
           ) : (
             <>
-              <div className="text-4xl mb-2">♿</div>
+              <UploadAffordance />
               <p className="text-sm text-slate-600">
                 Drop an image or{" "}
                 <span className="text-brand-600 font-medium">browse</span>

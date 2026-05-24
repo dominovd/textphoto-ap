@@ -7,6 +7,7 @@ import {
   getPetStyle,
   getPetStylePreviewUrl,
 } from "@/lib/pet-portrait-styles";
+import { UploadAffordance } from "@/lib/tool-icons";
 
 // Outer wrapper — Suspense around useSearchParams() (Next 15 requirement
 // for static prerendering).
@@ -185,7 +186,7 @@ function PetPortraitInner({
             />
           ) : (
             <>
-              <div className="text-4xl mb-2">🐾</div>
+              <UploadAffordance />
               <p className="text-sm text-slate-600">
                 Drop a clear photo of your pet or{" "}
                 <span className="text-brand-600 font-medium">browse</span>

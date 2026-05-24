@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { VibeIcon } from "@/lib/tool-icons";
+import { VibeIcon, UploadAffordance } from "@/lib/tool-icons";
 
 const VIBES = [
   { id: "aesthetic", label: "Aesthetic" },
@@ -109,7 +109,7 @@ export default function PhotoCaptionTool({
             />
           ) : (
             <>
-              <div className="text-4xl mb-2">📷</div>
+              <UploadAffordance />
               <p className="text-sm text-slate-600">
                 Drop a photo or{" "}
                 <span className="text-brand-600 font-medium">browse</span>

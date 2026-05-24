@@ -47,11 +47,13 @@ function AiTextEffectInner({
 
   const style = getStyle(styleId) || TEXT_EFFECT_STYLES[0];
 
-  // Auto-update default text when style changes (only if user hasn't typed)
+  // Auto-update default text when style changes (only if user hasn't typed).
+  // setState-in-effect rule is intentionally suppressed — we WANT this to fire
+  // as a side-effect of styleId changing via the style picker.
   useEffect(() => {
     const cur = getStyle(styleId);
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (cur && text === "") setText(cur.defaultText);
-    // intentionally not triggering on text change
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [styleId]);
 

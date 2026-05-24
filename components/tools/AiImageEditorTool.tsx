@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import BeforeAfterSlider from "@/components/BeforeAfterSlider";
+import { UploadAffordance } from "@/lib/tool-icons";
 
 const PROMPT_PRESETS: { label: string; emoji: string; prompt: string }[] = [
   {
@@ -217,7 +218,7 @@ export default function AiImageEditorTool() {
               />
             ) : (
               <>
-                <div className="text-4xl mb-2">🖼️</div>
+                <UploadAffordance />
                 <p className="text-sm text-slate-600">
                   Drop an image or{" "}
                   <span className="text-brand-600 font-medium">browse</span>

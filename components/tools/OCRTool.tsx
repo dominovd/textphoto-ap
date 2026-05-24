@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UploadAffordance } from "@/lib/tool-icons";
 
 type Mode = "default" | "handwriting" | "translate";
 
@@ -161,7 +162,7 @@ export default function OCRTool({ mode = "default" }: { mode?: Mode }) {
             />
           ) : (
             <>
-              <div className="text-4xl mb-2">{config.icon}</div>
+              <UploadAffordance />
               <p className="text-sm text-slate-600">
                 Drop an image or{" "}
                 <span className="text-brand-600 font-medium">browse</span>

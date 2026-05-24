@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UploadAffordance } from "@/lib/tool-icons";
 
 export default function UpscaleTool() {
   const [file, setFile] = useState<File | null>(null);
@@ -100,7 +101,7 @@ export default function UpscaleTool() {
             </>
           ) : (
             <>
-              <div className="text-4xl mb-2">🔍</div>
+              <UploadAffordance />
               <p className="text-sm text-slate-600">
                 Drop a photo or{" "}
                 <span className="text-brand-600 font-medium">browse</span>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UploadAffordance } from "@/lib/tool-icons";
 
 export type ImageProcessConfig = {
   endpoint: string;
@@ -118,7 +119,7 @@ export default function ImageProcessTool({
             />
           ) : (
             <>
-              <div className="text-4xl mb-2">{config.icon}</div>
+              <UploadAffordance />
               <p className="text-sm text-slate-600">
                 Drop a photo or{" "}
                 <span className="text-brand-600 font-medium">browse</span>

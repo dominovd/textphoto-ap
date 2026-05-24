@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UploadAffordance } from "@/lib/tool-icons";
 
 const TRANSPARENT_BG =
   "bg-[linear-gradient(45deg,#f1f5f9_25%,transparent_25%,transparent_75%,#f1f5f9_75%,#f1f5f9),linear-gradient(45deg,#f1f5f9_25%,#fff_25%,#fff_75%,#f1f5f9_75%,#f1f5f9)] bg-[size:24px_24px] bg-[position:0_0,12px_12px]";
@@ -104,7 +105,7 @@ export default function BgRemoveTool() {
             />
           ) : (
             <>
-              <div className="text-4xl mb-2">🖼️</div>
+              <UploadAffordance />
               <p className="text-sm text-slate-600">
                 Drop a photo or{" "}
                 <span className="text-brand-600 font-medium">browse</span>

@@ -548,3 +548,46 @@ export function VibeIcon({
   const Icon = VIBE_ICONS[id] || Sparkles;
   return <Icon className={className} />;
 }
+
+// ---------------------------------------------------------------------------
+// Upload icon — used inside every tool's drop-zone (consistent affordance).
+// Duotone cloud-up-arrow at 1.6em default. Pair with a brand-50 backdrop.
+// ---------------------------------------------------------------------------
+
+export function UploadIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.7}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      width="1.6em"
+      height="1.6em"
+      aria-hidden="true"
+      className={className}
+    >
+      <path
+        d="M7 18A5 5 0 0 1 5 8.2a6 6 0 0 1 11.4-1.7A4.5 4.5 0 0 1 18 15h-1"
+        fill="currentColor"
+        fillOpacity="0.2"
+      />
+      <path d="M7 18A5 5 0 0 1 5 8.2a6 6 0 0 1 11.4-1.7A4.5 4.5 0 0 1 18 15h-1" />
+      <path d="M12 12v9" />
+      <path d="M8.5 15.5L12 12l3.5 3.5" />
+    </svg>
+  );
+}
+
+/**
+ * Convenience wrapper: the full duotone "upload affordance" block —
+ * a brand-coloured square with the cloud icon. Use inside drop zones.
+ */
+export function UploadAffordance() {
+  return (
+    <div className="mx-auto mb-3 w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center">
+      <UploadIcon />
+    </div>
+  );
+}
