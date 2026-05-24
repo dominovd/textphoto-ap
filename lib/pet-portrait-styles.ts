@@ -27,9 +27,23 @@ export type PetPortraitStyle = {
 const BLOB_BASE = "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com";
 
 export function getPetStylePreviewUrl(styleId: string): string | null {
-  // Pre-seeded styles. Add to set after seeding.
+  // Pre-seeded styles. All 12 seeded May 2026 via scripts/seed-pet-from-files.mjs
+  // using a single sample pet photo. To re-seed: bump image-gen limits,
+  // regenerate via /pet/ai-pet-portrait-generator, drop pngs in ~/Downloads/pet,
+  // run the script, restore limits.
   const seeded = new Set<string>([
-    // populated after seeding pass
+    "gym-athlete",
+    "mafia-boss",
+    "chef",
+    "astronaut",
+    "doctor",
+    "medieval-knight",
+    "renaissance-painting",
+    "superhero",
+    "samurai",
+    "business-ceo",
+    "rockstar",
+    "wizard",
   ]);
   return seeded.has(styleId) ? `${BLOB_BASE}/pet-showcase/${styleId}.webp` : null;
 }
