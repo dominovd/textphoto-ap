@@ -6,15 +6,25 @@ import { getPetStyle } from "@/lib/pet-portrait-styles";
 export const runtime = "nodejs";
 export const maxDuration = 30;
 
-type Kind = "text-effect" | "pet-portrait";
+type Kind = "text-effect" | "pet-portrait" | "editor-demo";
+
+// Allowed slot ids for the AI Image Editor demo carousel (before/after).
+const EDITOR_DEMO_SLOTS = new Set([
+  "bg-before",
+  "bg-after",
+  "color-before",
+  "color-after",
+]);
 
 function validateStyle(kind: Kind, styleId: string): boolean {
   if (kind === "pet-portrait") return !!getPetStyle(styleId);
+  if (kind === "editor-demo") return EDITOR_DEMO_SLOTS.has(styleId);
   return !!getStyle(styleId);
 }
 
 function blobPathFor(kind: Kind, styleId: string): string {
   if (kind === "pet-portrait") return `pet-showcase/${styleId}.webp`;
+  if (kind === "editor-demo") return `editor-demo/${styleId}.webp`;
   return `showcase/${styleId}.webp`;
 }
 
@@ -55,7 +65,12 @@ export async function POST(req: Request) {
     const styleId = String(body.styleId || "");
     const base64 = String(body.base64 || "");
     const kindRaw = String(body.kind || "text-effect");
-    const kind: Kind = kindRaw === "pet-portrait" ? "pet-portrait" : "text-effect";
+    const kind: Kind =
+      kindRaw === "pet-portrait"
+        ? "pet-portrait"
+        : kindRaw === "editor-demo"
+          ? "editor-demo"
+          : "text-effect";
     if (!styleId || !base64) {
       return NextResponse.json(
         { error: "styleId and base64 required" },

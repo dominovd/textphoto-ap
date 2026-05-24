@@ -63,25 +63,22 @@ type DemoPair = {
   afterSrc: string;
 };
 
+// Seeded May 2026 via scripts/seed-editor-demo.mjs.
+// 1024×576 webp in Blob under /editor-demo/.
+const DEMO_BLOB = "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com/editor-demo";
+
 const DEMO_PAIRS: DemoPair[] = [
   {
     id: "background-change",
     label: "Background change",
-    // Both placeholder slots reuse the same generated pet portrait until we
-    // seed dedicated demos via /api/ai-image-edit. Once seeded, swap these
-    // URLs to point at the actual before/after pair in pet-showcase/.
-    beforeSrc:
-      "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com/pet-showcase/chef.webp",
-    afterSrc:
-      "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com/pet-showcase/astronaut.webp",
+    beforeSrc: `${DEMO_BLOB}/bg-before.webp`,
+    afterSrc: `${DEMO_BLOB}/bg-after.webp`,
   },
   {
     id: "color-change",
     label: "Color change",
-    beforeSrc:
-      "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com/pet-showcase/business-ceo.webp",
-    afterSrc:
-      "https://0sbqqt82hdpagq0d.public.blob.vercel-storage.com/pet-showcase/superhero.webp",
+    beforeSrc: `${DEMO_BLOB}/color-before.webp`,
+    afterSrc: `${DEMO_BLOB}/color-after.webp`,
   },
 ];
 
