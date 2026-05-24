@@ -5,6 +5,7 @@ import { categories, getCategory } from "@/lib/categories";
 import { getToolsInCategory } from "@/lib/tools";
 import ToolCard from "@/components/ToolCard";
 import { CategoryIcon } from "@/lib/category-icons";
+import { getToolIconColors } from "@/lib/tool-icons";
 
 export function generateStaticParams() {
   return categories.map((c) => ({ category: c.slug }));
@@ -23,6 +24,17 @@ export async function generateMetadata({
     description: cat.description,
     alternates: { canonical: `https://textphoto.app/${cat.slug}` },
   };
+}
+
+function CategoryHero({ slug }: { slug: string }) {
+  const { bg, fg } = getToolIconColors(slug);
+  return (
+    <span
+      className={`w-12 h-12 rounded-xl ${bg} ${fg} flex items-center justify-center text-[22px]`}
+    >
+      <CategoryIcon slug={slug} />
+    </span>
+  );
 }
 
 export default async function CategoryPage({
@@ -93,11 +105,7 @@ export default async function CategoryPage({
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <span
-              className={`w-11 h-11 rounded-xl bg-gradient-to-br ${cat.gradient} flex items-center justify-center text-white shadow-sm`}
-            >
-              <CategoryIcon slug={cat.slug} />
-            </span>
+            <CategoryHero slug={cat.slug} />
             <h1 className="text-3xl font-bold">{cat.name}</h1>
           </div>
           <p className="text-slate-600 max-w-2xl">{cat.description}</p>

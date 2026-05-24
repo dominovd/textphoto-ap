@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import type { Tool } from "@/lib/tools";
+import { ToolIcon, getToolIconColors } from "@/lib/tool-icons";
 
 type CategoryLite = { slug: string; name: string; gradient: string };
 type SortKey = "popular" | "alpha";
@@ -148,14 +149,19 @@ export default function SearchClient({
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {filtered.map((t) => {
             const cat = categoryByslug[t.category];
+            const colors = getToolIconColors(t.category);
             return (
               <Link
                 key={`${t.category}/${t.slug}`}
                 href={`/${t.category}/${t.slug}`}
-                className="tool-card group block rounded-2xl bg-white border border-slate-200 p-5"
+                className="tool-card group block rounded-2xl bg-white border border-slate-200 p-5 hover:border-brand-300 hover:shadow-md transition"
               >
                 <div className="flex items-center justify-between mb-3">
-                  <span className="text-2xl">{t.icon}</span>
+                  <div
+                    className={`w-11 h-11 rounded-xl ${colors.bg} ${colors.fg} flex items-center justify-center text-[20px] group-hover:scale-105 transition-transform`}
+                  >
+                    <ToolIcon slug={t.slug} />
+                  </div>
                   {t.component && (
                     <span className="text-xs px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-700 font-medium">
                       Live

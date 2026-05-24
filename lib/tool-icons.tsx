@@ -450,3 +450,101 @@ export function getToolIconColors(categorySlug: string): {
 } {
   return CATEGORY_COLORS[categorySlug] || { bg: "bg-slate-100", fg: "text-slate-700" };
 }
+
+// ---------------------------------------------------------------------------
+// Vibe icons — used inside tool components' vibe/style pickers
+// (PhotoCaptionTool, InstagramBioTool, MemeTool).
+// Same duotone style, smaller default size (1.1em).
+// ---------------------------------------------------------------------------
+
+const vibeBase: IconProps = {
+  viewBox: "0 0 24 24",
+  fill: "none",
+  stroke: "currentColor",
+  strokeWidth: 1.7,
+  strokeLinecap: "round",
+  strokeLinejoin: "round",
+  width: "1.1em",
+  height: "1.1em",
+  "aria-hidden": true,
+};
+
+const Heart = (p: IconProps) => (
+  <svg {...vibeBase} {...p}>
+    <path
+      d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"
+      fill="currentColor"
+      fillOpacity="0.25"
+    />
+    <path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z" />
+  </svg>
+);
+
+const Briefcase = (p: IconProps) => (
+  <svg {...vibeBase} {...p}>
+    <rect
+      x="3"
+      y="7"
+      width="18"
+      height="13"
+      rx="2"
+      fill="currentColor"
+      fillOpacity="0.2"
+    />
+    <rect x="3" y="7" width="18" height="13" rx="2" />
+    <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+  </svg>
+);
+
+const GradCap = (p: IconProps) => (
+  <svg {...vibeBase} {...p}>
+    <path
+      d="M2 9l10-4 10 4-10 4L2 9z"
+      fill="currentColor"
+      fillOpacity="0.25"
+    />
+    <path d="M2 9l10-4 10 4-10 4L2 9z" />
+    <path d="M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5" />
+  </svg>
+);
+
+const Hands = (p: IconProps) => (
+  <svg {...vibeBase} {...p}>
+    <path
+      d="M5 13c0-3 2-5 4-5l3 4 3-4c2 0 4 2 4 5v3l-7 5-7-5v-3z"
+      fill="currentColor"
+      fillOpacity="0.25"
+    />
+    <path d="M5 13c0-3 2-5 4-5l3 4 3-4c2 0 4 2 4 5v3l-7 5-7-5v-3z" />
+  </svg>
+);
+
+/** Map vibe id → icon component. Used by caption / bio / meme pickers. */
+export const VIBE_ICONS: Record<string, (p: IconProps) => React.JSX.Element> = {
+  // Captions + Bio
+  aesthetic: Sparkles,
+  funny: Smile,
+  romantic: Heart,
+  savage: Flame,
+  professional: Briefcase,
+  inspirational: GradCap,
+  edgy: Bolt,
+  cute: Heart,
+
+  // Memes
+  mixed: Mask,
+  relatable: Hands,
+  wholesome: Heart,
+  gen_z: Crown,
+};
+
+export function VibeIcon({
+  id,
+  className,
+}: {
+  id: string;
+  className?: string;
+}) {
+  const Icon = VIBE_ICONS[id] || Sparkles;
+  return <Icon className={className} />;
+}

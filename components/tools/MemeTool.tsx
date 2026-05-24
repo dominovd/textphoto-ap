@@ -1,13 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { VibeIcon } from "@/lib/tool-icons";
 
 const STYLES = [
-  { id: "mixed", label: "🎭 Mixed" },
-  { id: "relatable", label: "🤝 Relatable" },
-  { id: "savage", label: "🔥 Savage" },
-  { id: "wholesome", label: "💖 Wholesome" },
-  { id: "gen_z", label: "😩 Gen Z" },
+  { id: "mixed", label: "Mixed" },
+  { id: "relatable", label: "Relatable" },
+  { id: "savage", label: "Savage" },
+  { id: "wholesome", label: "Wholesome" },
+  { id: "gen_z", label: "Gen Z" },
 ];
 
 type Meme = { text: string; chars: number };
@@ -106,13 +107,14 @@ export default function MemeTool() {
             <button
               key={s.id}
               onClick={() => setStyle(s.id)}
-              className={`px-3 py-2 rounded-lg border text-sm ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition ${
                 style === s.id
                   ? "border-brand-500 bg-brand-50 text-brand-700 font-medium"
                   : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
               }`}
             >
-              {s.label}
+              <VibeIcon id={s.id} />
+              <span>{s.label}</span>
             </button>
           ))}
         </div>

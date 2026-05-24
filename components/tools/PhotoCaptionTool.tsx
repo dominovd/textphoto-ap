@@ -1,14 +1,15 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { VibeIcon } from "@/lib/tool-icons";
 
 const VIBES = [
-  { id: "aesthetic", label: "✨ Aesthetic" },
-  { id: "funny", label: "😂 Funny" },
-  { id: "romantic", label: "💕 Romantic" },
-  { id: "savage", label: "🔥 Savage" },
-  { id: "professional", label: "💼 Professional" },
-  { id: "inspirational", label: "🎓 Inspirational" },
+  { id: "aesthetic", label: "Aesthetic" },
+  { id: "funny", label: "Funny" },
+  { id: "romantic", label: "Romantic" },
+  { id: "savage", label: "Savage" },
+  { id: "professional", label: "Professional" },
+  { id: "inspirational", label: "Inspirational" },
 ];
 
 const PLATFORM_LABEL: Record<string, string> = {
@@ -128,13 +129,14 @@ export default function PhotoCaptionTool({
             <button
               key={v.id}
               onClick={() => setVibe(v.id)}
-              className={`px-3 py-2 rounded-lg border text-sm ${
+              className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition ${
                 vibe === v.id
                   ? "border-brand-500 bg-brand-50 text-brand-700 font-medium"
                   : "border-slate-200 bg-white text-slate-700 hover:border-slate-300"
               }`}
             >
-              {v.label}
+              <VibeIcon id={v.id} />
+              <span>{v.label}</span>
             </button>
           ))}
         </div>

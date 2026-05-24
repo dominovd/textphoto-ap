@@ -1,15 +1,17 @@
 import Link from "next/link";
 import type { Category } from "@/lib/categories";
 import { CategoryIcon } from "@/lib/category-icons";
+import { getToolIconColors } from "@/lib/tool-icons";
 
 export default function CategoryCard({ category }: { category: Category }) {
+  const { bg, fg } = getToolIconColors(category.slug);
   return (
     <Link
       href={`/${category.slug}`}
       className="tool-card group block rounded-2xl p-5 bg-white border border-slate-200 hover:border-brand-300 hover:shadow-md transition"
     >
       <div
-        className={`w-11 h-11 rounded-xl bg-gradient-to-br ${category.gradient} flex items-center justify-center text-white mb-3 shadow-sm group-hover:scale-105 transition-transform`}
+        className={`w-12 h-12 rounded-xl ${bg} ${fg} flex items-center justify-center mb-3 text-[22px] group-hover:scale-105 transition-transform`}
       >
         <CategoryIcon slug={category.slug} />
       </div>
